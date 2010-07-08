@@ -65,7 +65,7 @@
       n      =  2
       m      = 10
 
-      if (nu1 .gt. 0)  write( nu1, 9999) n, m
+      if (nout .gt. 0)  write( nout, 9999) n, m
 
       return
 

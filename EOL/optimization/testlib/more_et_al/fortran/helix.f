@@ -45,10 +45,6 @@
       x2 = x(2)
       x3 = x(3)
 
-      write( nu1, 2) x1
-   2  format(/' x1 = ', 1pe14.5)
-      if (x1 .eq. zero)  stop
-
       na = mode / 1000
       nt = mode - na*1000
       nb = nt / 100
@@ -105,11 +101,14 @@ c     piinv  = one / acos(-one)
 *-----------------------------------------------------------------------
 
  100  continue
-
-      quo   = x2 / x1
+      if (x1 .eq. zero) then
+         theta = sign(0.25d0, x2)
+      else
+         quo   = x2 / x1
 c     theta = half*piinv*atan2(x2/x1)
-      theta = half*piinv*atan(quo)
-      if (x1 .lt. zero)  theta = theta + half
+         theta = half*piinv*atan(quo)
+         if (x1 .lt. zero)  theta = theta + half
+      endif
 
       f(1) = ten*(x3 -ten*theta)
       f(2) = ten*(sqrt(x1*x1 + x2*x2) - one)
@@ -141,11 +140,15 @@ c     theta = half*piinv*atan2(x2/x1)
 
  300  continue
 
-      quo   = x2 / x1
+      if (x1 .eq. zero) then
+         theta = sign(0.25d0, x2)
+      else
+         quo   = x2 / x1
 c     theta = half*piinv*atan2(x2,x1)
-      theta = half*piinv*atan(quo)
-      if (x1 .lt. zero)  theta = theta + half
-
+         theta = half*piinv*atan(quo)
+         if (x1 .lt. zero)  theta = theta + half
+      endif
+      
       t = x1*x1 + x2*x2
       s = dsqrt(t)
       q = one / t

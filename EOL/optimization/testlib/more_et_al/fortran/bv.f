@@ -30,7 +30,8 @@
       intrinsic          dble
 
       double precision   h
-      common /PARAM1/    h
+      integer            n1
+      common /PARAM1/    h, n1
       save   /PARAM1/
 
       double precision   zero, one, two, three

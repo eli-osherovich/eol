@@ -44,10 +44,10 @@
       x3 = x(3)
       x4 = x(4)
 
-      if (x2 .lt. 0.d0) then
-        write( 6, *) '*** getfun : function not defined : x2 < 0'
-        stop
-      end if
+c$$$      if (x2 .lt. 0.d0) then
+c$$$        write( 6, *) '*** getfun : function not defined : x2 < 0'
+c$$$        stop
+c$$$      end if
 
       na = mode / 1000
       nt = mode - na*1000
