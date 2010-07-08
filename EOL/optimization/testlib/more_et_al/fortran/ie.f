@@ -30,7 +30,7 @@
       intrinsic          dble
 
       double precision   h
-      common /PARAM1/    h
+      common /PARAM1/    h, h2
       save   /PARAM1/
 
       double precision   zero, half, one, two, three

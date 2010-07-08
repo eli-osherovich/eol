@@ -21,7 +21,10 @@
 
       integer            na, nb, nc, nd, nt, nh
 
-      integer            i, j, jm1, n1, nj, nj1
+      integer            i, j, jm1, n1, n2, nj, nj1
+
+      common /PARAM1/    n1, n2
+      save   /PARAM1/
 
       double precision   r1, r2, s1, s2, t2, ti, t2i, tijm2, x1, xnj
 

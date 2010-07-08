@@ -25,7 +25,7 @@
       double precision   ddot
 
       double precision   a
-      common /PARAM1/    a(2,2)
+      common /PARAM1/    a(2,2), na
       save   /PARAM1/
 
       double precision   zero, one, two

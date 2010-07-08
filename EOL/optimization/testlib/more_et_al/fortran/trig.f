@@ -23,6 +23,9 @@
 
       double precision   dn, sum, cxi, sxj, xi, xj
 
+      common /PARAM1/    dn
+      save   /PARAM1/
+
       double precision   ddot
 
       intrinsic          dble, cos, sin

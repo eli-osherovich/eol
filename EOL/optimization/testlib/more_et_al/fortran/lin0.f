@@ -17,6 +17,10 @@
       integer            nout
       common /IOUNIT/    nout
 
+      integer            nfm1, nxm1
+      common /PARAM1/    nfm1, nxm1
+      save   /PARAM1/
+
       logical            lf, lj
 
       integer            na, nb, nc, nd, nt, nh

@@ -24,8 +24,11 @@
       double precision   ddot
 
       double precision   coeff
-      common /PARAM1/    coeff
+      integer            neven
+      
+      common /PARAM1/    coeff, neven
       save   /PARAM1/
+
 
       double precision   zero, one, two, ten, hundrd
       parameter         (zero = 0.d0, one = 1.d0, two = 2.d0)

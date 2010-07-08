@@ -23,6 +23,9 @@
 
       integer            n1, i, ip1, im1, j
 
+      common /PARAM1/    n1
+      save   /PARAM1/
+
       double precision   xi, xip1, xim1
 
       double precision   ddot

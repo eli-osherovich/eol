@@ -25,8 +25,9 @@
 
       intrinsic          sqrt
 
+      integer            nqrtr
       double precision   rtfive, rtten, rtten2
-      common /PARAM1/    rtfive, rtten, rtten2
+      common /PARAM1/    rtfive, rtten, rtten2, nqrtr
       save   /PARAM1/
 
       double precision   zero, one, two, three, four, five, ten

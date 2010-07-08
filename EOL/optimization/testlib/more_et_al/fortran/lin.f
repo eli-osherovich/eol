@@ -21,6 +21,10 @@
 
       integer            na, nb, nc, nd, nt, nh
 
+      double precision   dnfi2
+      common /PARAM1/    dnfi2
+      save   /PARAM1/
+
       double precision   zero, one, two
       parameter         (zero = 0.d0, one = 1.d0, two = 2.d0)
 

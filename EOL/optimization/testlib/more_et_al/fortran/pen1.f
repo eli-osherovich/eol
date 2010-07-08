@@ -28,7 +28,7 @@
       intrinsic          sqrt, dble
 
       double precision   a2
-      common /PARAM1/    a2
+      common /PARAM1/    a2, a
       save   /PARAM1/
 
       double precision   zero, one, two, qtr
