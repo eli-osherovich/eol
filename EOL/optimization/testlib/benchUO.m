@@ -96,7 +96,7 @@ for i = 1:numel(allSlibs)
     [~, fval, output] = lbfgs_eo(x0, [], fxStruct, options);
     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
             fval, output.firstOrderOpt, output.nIterations, output.funcCount, ...
-            status2str(output.exitFlag), 'lbfgs_eo' );
+            status2str(output.exitFlag, output.lsExitFlag), 'lbfgs_eo' );
         %break;
 %     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     % non-linear least squares (trust region reflective)  %
@@ -139,10 +139,14 @@ end
 end
 
 
-function str = status2str(status)
+function str = status2str(status, lsStatus)
     switch status
       case -4
-          str = 'LS Error';
+          if nargin < 2
+              str = 'LS Err';
+          else
+              str = sprintf('LS Err (%d)', lsStatus);
+          end
           
         case -3
             str = 'F Error';

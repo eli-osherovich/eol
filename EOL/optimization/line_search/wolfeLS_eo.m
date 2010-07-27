@@ -1,5 +1,4 @@
-function [t, x, f, g, Output] = wolfeLS_eo(t, x, f, g, ...
-    func, dir, Options)
+function [t, x, f, g, Output] = wolfeLS_eo(t, x, f, g, func, dir, Options)
 % Line-search routine with strong Wolfe's conditions.
 
 
@@ -24,19 +23,19 @@ d0 = d;
     tolDD, ...          % Directional derivative tolerance (1e-10)
     minFVal, ...        % Minimal function value (-Inf)
     minStp, ...         % Minimal step (1e-20)
-    maxStp, ...         % Maximal step (1e+20 or based on minFval and
+    maxStp, ...         % Maximal step (1e+20 or based on minFVal and
     xtrapMin, ...       % Step-length extrapolation max. factor (10)
     xtrapMax, ...       % Step-length extrapolation min. factor (1.1)
     complexVarsFlag...  % Indicator whether the variables X are complex (false)
-    ] = wolfeLSGetOptions_eo(x0, Options);
- 
+] = wolfeLSGetOptions_eo(x0, Options);
+
 
 
 
 % dummy empty cell array (used by calc_EDx)    
 % empty = cell(size(func_Ax_Struct));
 
-% pre-allocate space for Ax
+% preallocate space for Ax
 % Ax = cell(size(Ax0));
 
 
@@ -52,7 +51,7 @@ maxStp = min(maxStp, -(f0 - minFVal)/(d0*fdf));
 
 % Check inputs validity.
 if t <=0 || fdf < 0 || gdf < 0 || tolX < 0 || tolDD < 0 || ...
-        minStp < 0 || maxStp < minStp || maxIter < 0
+       minStp < 0 || maxStp < minStp || maxIter < 0
     if nargout < 5
         error('EOL:wolfeLS:InvalidInputs', 'Invalid input parameters');
     else
@@ -73,25 +72,25 @@ done = false;
 
 %% Run iterations
 while ~done
+    
+    % Force the step to be within global bounds.
+    t = max(t, minStp);
+    t = min(t, maxStp);
+    
+    
     % Test termination criteria.
     [done, exitFlag, exitMsg] = testTermCriteriaLS(...
         iter, data, i_lo, i_hi, f, d, ...
         maxIter, tolX, tolDD, minFVal, maxStp, minStp);
     
-    
+    % Update iteration counter.    
     iter = iter + 1;
     
-    % Save current X_lo data.
+    % Save current *_lo data.
     i_lo_old = i_lo;
     t_lo_old = t_lo;
     
-    % Force the step to be within global bounds.
-    t = max(t, minStp);
-    t = min(t, maxStp);
-        
-    
-        
-    % evaluate function and gradient at the new point
+    % Evaluate the function and gradient at the new point.
     x = x0 + t*dir;
     %     for k = 1:length(func_Ax_Struct)
     %         Ax{k} = Ax0{k} + t * Adir{k};
@@ -105,21 +104,24 @@ while ~done
     data(iter+1, :) = [t, f, d];
     
     if f > f0 + fdf*t*d0 || f > f_lo
-        % sufficient decrease condition is not statisfied
-        % or current function value is higher than f_lo
-        % bracket is found
+        % Sufficient decrease condition is not statisfied
+        % or current function value is higher than f_lo.
+        % Bracket is found.
         i_hi = iter+1;
         
     elseif abs(d) <= abs(gdf*d0)
-        % current t satisfies sufficient decrease condition
-        % if it also satisfies curvature condition it satisfies strong
-        % Wolfe criteria. line-search succeeded.
-       break;
+        % Current t satisfies sufficient decrease condition
+        % if it also satisfies curvature condition. Hence, the strong
+        % Wolfe conditions are satisfied. 
+        % Line-search succeeded.
+        break;
     else
-        % current t satisfies sufficient decrease conditions and current
-        % function value is below f_lo. hence, f_lo must be updated
+        % Current t satisfies the sufficient decrease condition and current
+        % function value is below f_lo. Hence, *_lo  variables must be
+        % updated.
         i_lo = iter+1; t_lo = t; f_lo = f;
         
+        % Check if we have a bracket here.
         if d*(t_lo_old - t) < 0
             i_hi = i_lo_old;
         end
@@ -151,77 +153,78 @@ Output.exitMsg = exitMsg;
 function [done, exitFlag, exitMsg] = testTermCriteriaLS(...
     iter, data, i_lo, i_hi, f, d, ...
     maxIter, tolX, tolDD, minFVal, maxStp, minStp)
-
-done = false;
-exitFlag = 0;
-exitMsg = '';
-
-t = data(iter+1, 1);
-
-if iter == 0 && d >= 0
-    done = true;
-    exitFlag = -1;
-    exitMsg = 'Directional derivative is not a descent direction';
-    return;
-end
-
-if iter >= maxIter
-    done = true;
-    exitFlag = 1;
-    exitMsg = sprintf(['Number of iterations (%d) exceeded maximum ' ...
-                       'allowed.'], maxIter);
-    return;
-end
     
-if ~isempty(i_hi)
-    t_lo = data(i_lo, 1);
-    d_lo = data(i_lo, 3);
-    t_hi = data(i_hi, 1);
+    done = false;
+    exitFlag = 0;
+    exitMsg = '';
     
-    % Check that the bracket is valid, i.e., contains minimum.
-    if d_lo * ( t_hi - t_lo) > 0 
+    t = data(iter+1, 1);
+    
+    if iter == 0 && d >= 0
         done = true;
-        exitFlag = -4;
-        exitMsg = 'Invalid bracket';
+        exitFlag = -1;
+        exitMsg = 'Directional derivative is not a descent direction';
         return;
     end
-            
-    % Check that the bracket is not too short.
-    if abs(t_lo - t_hi) <= tolX
+    
+    if iter >= maxIter
         done = true;
-        exitFlag = 2;
-        exitMsg = sprintf('Interval of uncertainty is shorter than tolX (%g) tolerance.', ...
-            tolX);
+        exitFlag = 1;
+        exitMsg = sprintf(['Number of iterations (%d) exceeded maximum ' ...
+                           'allowed.'], maxIter);
         return;
     end
-end
-
-if f <= minFVal
-    done = true;
-    exitFlag = 3;
-    exitMsg = sprintf('Function value is below minFVal (%g).', ...
-        minFVal);
-    return;
-end
-
-if t == maxStp
-    done = true;
-    exitFlag = 4;
-    exitMsg = sprintf('t is equal maxStp (%g)', maxStp);
-    return;
-end
-
-if t == minStp
-    done = true;
-    exitFlag = 5;
-    exitMsg = sprintf('t is equal minStp (%g)', minStp);
-    return;
-end
-
-if abs(d) <= tolDD
-    done = true;
-    exitFlag = 6;
-    exitMsg = sprintf('Directional derivative is below tolDD (%g) tolerance', ...
-        tolDD);
-    return;
-end
+    
+    if ~isempty(i_hi)
+        t_lo = data(i_lo, 1);
+        d_lo = data(i_lo, 3);
+        t_hi = data(i_hi, 1);
+        
+        % Check that the bracket is valid, i.e., contains minimum.
+        if d_lo * ( t_hi - t_lo) > 0 
+            done = true;
+            exitFlag = -4;
+            exitMsg = 'Invalid bracket';
+            return;
+        end
+        
+        % Check that the bracket is not too short.
+        if abs(t_lo - t_hi) <= tolX
+            done = true;
+            exitFlag = 2;
+            exitMsg = sprintf(['Interval of uncertainty is shorter than ' ...
+                               'tolX (%g) tolerance.'], tolX);
+            return;
+        end
+    end
+    
+    if f <= minFVal
+        done = true;
+        exitFlag = 3;
+        exitMsg = sprintf('Function value is below minFVal (%g).', ...
+                          minFVal);
+        return;
+    end
+    
+    if t == maxStp
+        done = true;
+        exitFlag = 4;
+        exitMsg = sprintf('t is equal maxStp (%g)', maxStp);
+        return;
+    end
+    
+    if t == minStp
+        done = true;
+        exitFlag = 5;
+        exitMsg = sprintf('t is equal minStp (%g)', minStp);
+        return;
+    end
+    
+    if abs(d) <= tolDD
+        done = true;
+        exitFlag = 6;
+        exitMsg = sprintf(['Directional derivative is below tolDD (%g) ' ...
+                           'tolerance'], tolDD);
+        return;
+    end
+    

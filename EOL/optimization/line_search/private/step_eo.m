@@ -1,40 +1,49 @@
-function t = step_eo(i, data, i_lo, i_hi, tMin, tMax)
-% interpolation 
+function t = step_eo(idx, data, idx_lo, idx_hi, tMin, tMax)
+% Compute step-length. 
+
+
+
+% Reference: 
+%--------------------
+% 1. Jorge J. Moré and David J. Thuente, “Line search algorithms
+% with guaranteed sufficient decrease,” ACM Trans. Math. Softw. 20, no. 3
+% (1994): 286-307.
+%
+
 
 
 % Copyright 2010 Eli Osherovich.
 
 % t0 is always t_lo
-t0 = data(i_lo, 1);
-f0 = data(i_lo, 2);
-d0 = data(i_lo, 3);
+t0 = data(idx_lo, 1);
+f0 = data(idx_lo, 2);
+d0 = data(idx_lo, 3);
 
-t1 = data(i, 1);
-f1 = data(i, 2);
-d1 = data(i, 3);
+t1 = data(idx, 1);
+f1 = data(idx, 2);
+d1 = data(idx, 3);
 
-% Pre-calculate cubic interpolation as it will be considered in most all
-% cases.
+% Calculate cubic interpolation as it will be considered in most cases.
 tc = cubic_interpolate(t0, t1, f0, f1, d0, d1);
 
-% Pre-calculate quadratic (secant) interpolation. It will be considered in
+% Calculate quadratic (secant) interpolation. It will be considered in
 % certain cases only.
 ts = t0 - d0*(t1 - t0)/(d1 - d0);
 
 % First case. A higher function value. The minimum is bracketed. If the
-% cubic step is closer to t_lo tan the quadratic step, the cubic step is
+% cubic step is closer to t_lo than the quadratic step, the cubic step is
 % taken, else, the average of the cubic and quadratic steps is taken.
 % Quadratic step is well-defined in this case, i.e., the parabola is convex
-% and has exactly one miminimum.
+% and has exactly one minimum.
 if f1 > f0
     tq = quadratic_interpolate(t0, t1, f0, f1, d0);
-
+    
     if abs(tc - t0) < abs(tq - t0)
         t = tc;
     else
         t = tc + (tq - tc)/2;
     end
-
+    
     % Second case. A lower function value and derivatives of opposite sign.
     % The minimum is bracketed. If the cubic step is closer to t_lo than
     % the quadratic (secant) step, the cubic step is taken, else the
@@ -69,16 +78,17 @@ else
     end
 end
 
-% Safe-guard the step.
-% t = min(t, tMax);
-% t = max(t, tMin);
 
-% If bracket is found make sure it is not too close to its endpoints.
-% if ~isempty(i_hi)
-%     t2 = data(i_hi, 1);
-%     if t2 > t0
-%         t = min(t0 + 0.66*(t2-t0), t);
-%     else
-%         t = max(t0 + 0.66*(t2-t0), t);
-%     end
+% If bracket is found make sure the step-length t is not too close to the
+% endpoints of the bracket.
+% The bracket should be given by [tMin, tMax] but we do not assume it and
+% reconstruct it from the values t_lo and t_hi.
+% if ~isempty(idx_hi)
+%     t2 = data(idx_hi, 1);
+%     tBrcktMin = min(t0, t2);
+%     tBrcktMax = max(t0, t2);
+%     % not too close from tBrcktMax
+%     t = min(tBrcktMin + 0.9*(tBrcktMax - tBrcktMin), t);
+%     % not too close from tBrcktMin
+%     t = max(tBrcktMin + 0.1*(tBrcktMax - tBrcktMin), t);
 % end
