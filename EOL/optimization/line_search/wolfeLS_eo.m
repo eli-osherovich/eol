@@ -1,11 +1,11 @@
 function [t, x, f, g, Output] = wolfeLS_eo(t, x, f, g, func, dir, Options)
 % Line-search routine with strong Wolfe's conditions.
-
-
-
+    
+    
+    
 % Copyright 2010 Eli Osherovich.
-
-
+    
+    
 % Save initial data (at t=0).
 t0 = 0;
 x0 = x;
@@ -13,8 +13,8 @@ f0 = f;
 g0 = g;
 d = real(g0'*dir); % directional derivative
 d0 = d;
-
-
+    
+    
 % Get parameters.
 [   maxIter,...         % Maximal number of iterations (20)
     fdf, ...            % Function value decrease constant (1e-4)
@@ -24,8 +24,8 @@ d0 = d;
     minFVal, ...        % Minimal function value (-Inf)
     minStp, ...         % Minimal step (1e-20)
     maxStp, ...         % Maximal step (1e+20 or based on minFVal and
-    xtrapMin, ...       % Step-length extrapolation max. factor (10)
-    xtrapMax, ...       % Step-length extrapolation min. factor (1.1)
+    xtrapMin, ...       % Step-length extrapolation max. factor (1.1)
+    xtrapMax, ...       % Step-length extrapolation min. factor (20)
     complexVarsFlag...  % Indicator whether the variables X are complex (false)
 ] = wolfeLSGetOptions_eo(x0, Options);
 
@@ -62,10 +62,10 @@ if t <=0 || fdf < 0 || gdf < 0 || tolX < 0 || tolDD < 0 || ...
 end
 
 % Set initial X_lo data.
-i_lo = 1; t_lo = t0; f_lo = f0;
+idx_lo = 1; t_lo = t0; f_lo = f0;
 
 % Bracket is not found hence i_hi is empty.
-i_hi = [];
+idx_hi = [];
 
 iter = 0;
 done = false;
@@ -80,14 +80,15 @@ while ~done
     
     % Test termination criteria.
     [done, exitFlag, exitMsg] = testTermCriteriaLS(...
-        iter, data, i_lo, i_hi, f, d, ...
+        data, iter, idx_lo, idx_hi, f, d, ...
         maxIter, tolX, tolDD, minFVal, maxStp, minStp);
     
-    % Update iteration counter.    
+    % Update iteration counter and index of the current slot in DATA array. 
     iter = iter + 1;
+    idx = iter + 1;
     
     % Save current *_lo data.
-    i_lo_old = i_lo;
+    idx_lo_old = idx_lo;
     t_lo_old = t_lo;
     
     % Evaluate the function and gradient at the new point.
@@ -101,13 +102,13 @@ while ~done
     d = real(g'*dir);
     
     % Save current data.
-    data(iter+1, :) = [t, f, d];
+    data(idx, :) = [t, f, d];
     
     if f > f0 + fdf*t*d0 || f > f_lo
         % Sufficient decrease condition is not statisfied
         % or current function value is higher than f_lo.
         % Bracket is found.
-        i_hi = iter+1;
+        idx_hi = idx;
         
     elseif abs(d) <= abs(gdf*d0)
         % Current t satisfies sufficient decrease condition
@@ -116,30 +117,30 @@ while ~done
         % Line-search succeeded.
         break;
     else
-        % Current t satisfies the sufficient decrease condition and current
-        % function value is below f_lo. Hence, *_lo  variables must be
-        % updated.
-        i_lo = iter+1; t_lo = t; f_lo = f;
+        % Current t satisfies the sufficient decrease condition and
+        % corresponding function value is below f_lo. Hence, *_lo
+        % variables must be updated.
+        idx_lo = idx; t_lo = t; f_lo = f;
         
         % Check if we have a bracket here.
         if d*(t_lo_old - t) < 0
-            i_hi = i_lo_old;
+            idx_hi = idx_lo_old;
         end
         
     end
     
     % Set the maximal and minimal step length for the current iteration.
-    if ~isempty(i_hi)
+    if ~isempty(idx_hi)
         % If bracket is known, use its endpoints, ...
-        tMinIter = min(data(i_lo,1), data(i_hi, 1));
-        tMaxIter = max(data(i_lo,1), data(i_hi, 1));
+        tMinIter = min(data(idx_lo,1), data(idx_hi, 1));
+        tMaxIter = max(data(idx_lo,1), data(idx_hi, 1));
     else
         % ... otherwise, use some extrapolated values.
         tMinIter = t + xtrapMin * (t - t_lo_old);
         tMaxIter = t + xtrapMax * (t - t_lo_old);
     end
     
-    t = step_eo(iter+1, data, i_lo_old, i_hi, tMinIter, tMaxIter);
+    t = step_eo(data, idx, idx_lo, idx_hi, tMinIter, tMaxIter);
 end
 
 
@@ -151,7 +152,7 @@ Output.exitFlag = exitFlag;
 Output.exitMsg = exitMsg;
 
 function [done, exitFlag, exitMsg] = testTermCriteriaLS(...
-    iter, data, i_lo, i_hi, f, d, ...
+    data, iter, i_lo, i_hi, f, d, ...
     maxIter, tolX, tolDD, minFVal, maxStp, minStp)
     
     done = false;

@@ -1,11 +1,11 @@
-function [maxIter, fdc, gdf, tolX, tolDD, minFVal, minStp, maxStp,...
-        xtrapMin, xtrapMax, complexVarsFlag] = wolfeLSGetOptions_eo(x0, Options)
+function [maxIter, fdc, gdf, tolX, tolDD, minFVal, minStp, maxStp, xtrapMin, ...
+          xtrapMax, complexVarsFlag] = wolfeLSGetOptions_eo(x0, Options)
 % WOLFELSGETOPTIONS - get options for wolfeLS routine.
 
 
 % Copyright 2010 Eli Osherovich.
-    
-    
+
+
 % Maximal number of iterations.
 maxIter = getOpt_eo(Options, 'LSmaxIter', 20);
 
@@ -37,7 +37,7 @@ maxStp = getOpt_eo(Options, 'LSMaxStep', 1e+20);
 xtrapMin = getOpt_eo(Options, 'LSXtrapMin', 1.1);
 
 % max. extrapolation factor
-xtrapMax = getOpt_eo(Options, 'LSXtrapMax', 10);
+xtrapMax = getOpt_eo(Options, 'LSXtrapMax', 20);
 
 % shall we assume complex variables?
 % by default use the complexity of x0
