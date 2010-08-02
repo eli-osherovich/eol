@@ -1,4 +1,4 @@
-function testAll(dirName)
+function testAll(dirName, fileOutName)
 %TESTALL - test all minimization problems in a directory.
 % 
 % Usage:
@@ -6,57 +6,68 @@ function testAll(dirName)
 % TESTALL(DIRNAME) - test all minimization problems in the directory
 % DIRNAME. Each problem is implemented in one shared library (.so or .dll
 % file).
+% The function tests correctness of Jacobian/Gradient calculations.
 %
 % IMPLEMENTATION DETAILS:
 %------------------------
 % See objFunAll()
-    
-    
+
+
+
 % Copyright 2010 Eli Osherovich.
 
-% use current directory if not sepcified
+    
+    
+% Use current directory if not specified.
 if 0 == nargin
     dirName = pwd;
 end
-    
-% all shared libraries in the directory
+
+% Use standard output if fileOutName was not provided.
+if nargin < 2 || isempty(fileOutName)
+    fileID = 1;
+else
+    fileID = fopen(fileOutName, 'w');
+end
+   
+% All shared libraries in the directory.
 allSlibs = dir(fullfile(dirName, '*.so'));
 
 
-% print header
-fprintf('%15s %15s %15s %15s %15s\n', 'Function',...
-    'Jac Abs Err', 'Jac Rel Err', ...
-    'Grad Abs Err', 'Grad Rel Err');
-
+% Print header.
+fprintf(fileID, '%-15s %-15s %-15s %-15s %-15s\n', 'Function', ['Jac Abs ' ...
+                    'Err'], 'Jac Rel Err', 'Grad Abs Err', 'Grad Rel Err');
+fprintf(fileID, ['-------------------------------------------------------' ...
+                 '------------------------\n']); 
 for i = 1:numel(allSlibs)
     libFile = fullfile(dirName, allSlibs(i).name);
     [~, funcName] = fileparts(libFile);
     
-    % get standard starting point 
+    % Get the standard starting point (defined by the problem).
     [~, ~, ~, ~, x] = objFuncAll(libFile);
     
-    % generate random point near the standard one
+    % Generate random point near the standard one.
     x = x + rand(size(x));
     
-    % calculate analytical Jacobian and grient
+    % Calculate analytical Jacobian and gradient.
     [~, ~, fj, g] = objFuncAll(libFile, x);
     
         
-    % calculate numerical Jacobian
-    N_Jac = (calcNJacCDExt_eo(@objFuncSOE, x))';
+    % Calculate numerical Jacobian.
+    N_Jac = (calcNumJacobian_eo(@objFuncSOE, x, 'precise'))';
     
-    % calculate numerical gradient
-    N_Grad = (calcNJacCDExt_eo(@objFuncSOS, x))';
+    % Calculate numerical gradient.
+    N_Grad = (calcNumJacobian_eo(@objFuncSOS, x, 'precise'))';
     
-    % Jacobian max errors
+    % Jacobian max errors.
     jacAbsErr = max(abs(fj(:) - N_Jac(:)));
     jacRelErr = max(abs((fj(:) - N_Jac(:))./fj(:)));
     
-    % gradient max errors
+    % Gradient max errors.
     gradAbsErr = max(abs(g(:) - N_Grad(:)));
     gradRelErr = max(abs((g(:) - N_Grad(:))./g(:)));
     
-    % prevent NaNs in relative error
+    % Prevent NaNs in relative errors when abs error is zero.
     if 0 == jacAbsErr 
         jacRelErr = 0;
     end
@@ -64,18 +75,18 @@ for i = 1:numel(allSlibs)
         gradRelErr = 0;
     end
     
-    % print results
-    fprintf('%15s %15g %15g %15g %15g\n', funcName, ...
+    % Print results.
+    fprintf(fileID, '%-15s %-15e %-15e %-15e %-15e\n', funcName, ...
         jacAbsErr, jacRelErr, gradAbsErr, gradRelErr);
 end
-% dummy system of equations problem
-% for numerical Jacobian calculation
+% Dummy system of equations problem
+% for numerical Jacobian calculation.
     function fvec = objFuncSOE (x)
         fvec = objFuncAll(libFile, x);
     end
 
-% dummy sum-of-squares problem
-% for numerical gradient calculation
+% Dummy sum-of-squares problem
+% for numerical gradient calculation.
     function fval = objFuncSOS (x)
         [~, fval] = objFuncAll(libFile, x);
     end

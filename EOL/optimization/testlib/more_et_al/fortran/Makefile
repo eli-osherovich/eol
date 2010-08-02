@@ -1,5 +1,5 @@
 FC = gfortran
-FFLAGS = -g -shared -fPIC
+FFLAGS = -g -shared -fPIC -finit-integer=1
 LDFLAGS = -lblas
 
 slibs := $(patsubst %.f,%.so,$(wildcard *.f))
