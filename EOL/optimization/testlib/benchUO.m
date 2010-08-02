@@ -1,5 +1,15 @@
 function benchUO (dirName, fileOutName)
-%BENCHUO - unconstrained optimization benchmarks
+% BENCHUO - unconstrained optimization benchmarks.
+
+% This function compares 7 different unconstrained optimzation routines on
+% a set of problems. At this moment the routines are:
+% 1) MATLAB's fminunc in medium-scale mode.
+% 2) MATLAB's fminunc in large-scale mode.
+% 3) Mark Schmidt's minFunc
+% 4) Eli Osherovich's LBFGS with minFunc's line-search.
+% 5) Eli Osherovich's LBFGS with his own line-search.
+% 6) MATLAB's lsqnonlin in large-scale mode.
+% 7) MATLAB's lsqnonlin in medium-scale mode.
 
     
 % Copyright 2010 Eli Osherovich.
@@ -48,78 +58,73 @@ for i = 1:numel(allSlibs)
     % get standard starting point 
     [~, ~, ~, ~, x0] = objFuncAll(libFile);
     
-%     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     % MATLAB's fuminunc: Medium-Scale mode              %
-%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     options = optimset(options, 'LargeScale', 'off');
-%     
-%     [~,fval,exitflag,output] = fminunc(@objFuncSOS, x0, options);
-%     % print results
-%     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
-%             fval, output.firstorderopt, output.iterations, output.funcCount, ...
-%             status2str(exitflag), output.algorithm );
-%     
-%     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     %   MATLAB's fuminunc: Large-Scale mode             %
-%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     options = optimset(options, 'LargeScale', 'on');
-%         
-%     [~, fval, exitflag, output] = fminunc(@objFuncSOS, x0, options);
-%     % print results
-%     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
-%             fval, output.firstorderopt, output.iterations, output.funcCount, ...
-%             status2str(exitflag), output.algorithm );
+    %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % MATLAB's fuminunc: Medium-Scale mode              %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    options = optimset(options, 'LargeScale', 'off');
+    
+    [~,fval,exitflag,output] = fminunc(@objFuncSOS, x0, options);
+    fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
+            fval, output.firstorderopt, output.iterations, output.funcCount, ...
+            status2str(exitflag), output.algorithm );
+    
+    %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %   MATLAB's fuminunc: Large-Scale mode             %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    options = optimset(options, 'LargeScale', 'on');
+        
+    [~, fval, exitflag, output] = fminunc(@objFuncSOS, x0, options);
+    fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
+            fval, output.firstorderopt, output.iterations, output.funcCount, ...
+            status2str(exitflag), output.algorithm );
     
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %          MINFUNC                                    %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %options.Display = 'on';
     [~, fval, exitflag, output] = minFunc(@objFuncSOS, x0, options);
     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
             fval, output.firstorderopt, output.iterations, output.funcCount, ...
             status2str(exitflag), 'minFunc' );
         
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %         LBFGS_EO                                   %
+    %         LBFGS_EO (with minFunc's line-search       %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     fxStruct = struct('function', @objFuncSOS);
-    %options.Display = 'on';
     [~, fval, exitflag, output] = lbfgsO_eo(x0, [], fxStruct, options);
     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
-            fval, output.firstorderopt, output.iterations, output.funcCount, ...
-            status2str(exitflag), 'lbfgsO_eo' );
+        fval, output.firstorderopt, output.iterations, output.funcCount, ...
+        status2str(exitflag), 'lbfgsO_eo' );
         
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %         LBFGS_EO  - TEST                           %
+    %         LBFGS_EO                                   %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %options.Display = 'on';
     fxStruct = struct('function', @objFuncSOS);
     [~, fval, output] = lbfgs_eo(x0, [], fxStruct, options);
     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
             fval, output.firstOrderOpt, output.nIterations, output.funcCount, ...
             status2str(output.exitFlag, output.lsExitFlag), 'lbfgs_eo' );
-     %   break;
-%     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     % non-linear least squares (trust region reflective)  %
-%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     options = optimset(options, 'Algorithm', 'trust-region-reflective' );
-%     
-%     [~, resnorm, ~, exitflag, output] = lsqnonlin(@objFuncNLLS, x0, [], ...
-%                                                   [], options);
-%     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
-%             resnorm, output.firstorderopt, output.iterations, output.funcCount, ...
-%             status2str(exitflag), output.algorithm );
-%     
-%     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     % non-linear least squares (Levenberg-Marquardt)      %
-%     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     options = optimset(options, 'Algorithm', 'levenberg-marquardt');
-%     
-%     [~, resnorm, ~, exitflag, output] = lsqnonlin(@objFuncNLLS, x0, [], ...
-%                                                   [], options);
-%     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
-%             resnorm, output.firstorderopt, output.iterations, output.funcCount, ...
-%             status2str(exitflag), output.algorithm );
+        
+    %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % non-linear least squares (trust region reflective)  %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    options = optimset(options, 'Algorithm', 'trust-region-reflective' );
+    
+    [~, resnorm, ~, exitflag, output] = lsqnonlin(@objFuncNLLS, x0, [], ...
+                                                  [], options);
+    fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
+            resnorm, output.firstorderopt, output.iterations, output.funcCount, ...
+            status2str(exitflag), output.algorithm );
+    
+    %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % non-linear least squares (Levenberg-Marquardt)      %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    options = optimset(options, 'Algorithm', 'levenberg-marquardt');
+    
+    [~, resnorm, ~, exitflag, output] = lsqnonlin(@objFuncNLLS, x0, [], ...
+                                                  [], options);
+    fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
+            resnorm, output.firstorderopt, output.iterations, output.funcCount, ...
+            status2str(exitflag), output.algorithm );
 
 end
 
@@ -141,6 +146,11 @@ end
 
 
 function str = status2str(status, lsStatus)
+% STATUS2STR - stranslate exit status into a meaningful string.
+
+% This function is buggy. Exits statuses of different optimization routines
+% do not match. It tries to be general, but must be replaced with several
+% different functions: one for each optimization routine.
     switch status
       case -4
           if nargin < 2

@@ -104,7 +104,7 @@ while ~done
     % Save current data.
     data(idx, :) = [t, f, d];
     
-    if f > f0 + fdf*t*d0 || f > f_lo
+    if f > f0 + fdf*t*d0 || f >= f_lo
         % Sufficient decrease condition is not statisfied
         % or current function value is higher than f_lo.
         % Bracket is found.

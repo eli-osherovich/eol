@@ -56,7 +56,6 @@ else
     t1 = data(idx_tmp, 1);
     f1 = data(idx_tmp, 2);
     d1 = data(idx_tmp, 3);
-    assert(f1 > f0 && t1 < t0);
 end
 
 
@@ -115,6 +114,8 @@ if ~isempty(idx_hi)
             t = min([tc, tMid]);
         end
     end
+    t = min(t, tMax);
+    t = max(t, tMin);
 else
     % Bracket is not known. Use extrapolation.
     % Due to how WOLFELS_EO works this situation is only possible when each
