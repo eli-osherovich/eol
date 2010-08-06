@@ -25,16 +25,6 @@ function t = step_eo(data, idx, idx_lo, idx_hi, tMin, tMax)
 
 
 
-% Reference: 
-%--------------------
-% 1. Jorge J. Moré and David J. Thuente, “Line search algorithms
-% with guaranteed sufficient decrease,” ACM Trans. Math. Softw. 20, no. 3
-% (1994): 286-307.
-%
-% With significant changes.
-
-
-
 % Copyright 2010 Eli Osherovich.
 
 % t0 is always t_lo
@@ -63,59 +53,63 @@ end
 tc = cubic_interpolate(t0, t1, f0, f1, d0, d1);
 % In certain cases the cubic polynomial may have no minimum. Such cases are
 % idicated by tc being complex. Setting tc to an empty array will
-% efficiently eliminate it if later stages.
+% efficiently make it infeasable at later stages.
 if ~isreal(tc)
     tc = [];
 end
 
-% Calculate quadratic (secant) interpolation. It will be considered in
-% certain cases only.
-ts = t0 - d0*(t1 - t0)/(d1 - d0);
-
 if ~isempty(idx_hi)
     % Bracket is known. Use interpolation.
-    tq = quadratic_interpolate(t0, t1, f0, f1, d0);
-    % Unset tc  and tq if they lie outside the bracket [t0, t1]
+    
+    % Unset tc it lies outside the bracket [t0, t1]
     if (tc - t0)*(tc - t1) > 0
         tc = [];
     end
+    
+    tq = quadratic_interpolate(t0, t1, f0, f1, d0);
     if (tq - t0)*(tq - t1) > 0
         tq = [];
     end
     
-    % Calculate mid point as it will be used in some cases.
+    % Some interior points.
+    tThird = t0 + (t1 - t0)/3;
     tMid = t0 + (t1 - t0)/2;
     
-    if f1 > f0
-        % First case: F1 > F0. Use TC if it is closer to T0 than TQ.
-        % Otherwise use the average of TC and TQ.
+    % First case: we have a "promising" bracket with derivatives of
+    % different sign at its endpoints. Cubic interpolation will always give
+    % a meaningful result in this case. Hence we use it.
+    if d1 * d0 < 0;
+        t = tc;
+        
+    elseif f1 > f0
+        % Second case: the derivatives have the same sign and F1 > F0.
+        % Quadratic interpolation cannot be correct here but we still
+        % consider it.
+        
+        
+        % Use the point which is farthers from T0.
+        if abs(tc - t0) < abs(tq - t0)
+            t = tq;
+        else
+            t = tc;
+        end
+        % But never go too far from T0.
+        t = min(t, tMid);
+        
+    else
+        % Use the point which is closest to T0.
         if abs(tc - t0) < abs(tq - t0)
             t = tc;
         else
-            t = tc + (tq - tc)/2;
+            t = tq;
         end
-    elseif d1 * d0 < 0
-        % Second case: F1 <= F0 and the derivatives D0 and D1 have opposite
-        % sign. Use TC if it is closer to T1. Otherwise use TS which is
-        % guaranteed to lie within the bracket [T0, T1].
-        if abs(tc - t1) < abs(ts - t1)
-            t = tc;
-        else
-            t = ts;
-        end
-    else
-        % Third case: F1 <= F0, the derivatives D0 and D1 have the same
-        % sign. Use TC or the midpoint TMID (whichever lies closer to t0).
-        % Proximity to T0 is preffered because T1 cannot satisfy the
-        % sufficient decrease condition.
-        if t1 > t0
-            t = max([tc, tMid]);
-        else
-            t = min([tc, tMid]);
-        end
+        % But never go too far from T0.
+        t = min(t, tThird);
     end
-    t = min(t, tMax);
-    t = max(t, tMin);
+    
+    % Safeguarding: do not let t be too close to the bracket endpoints.
+    t = min(t, tMax - 0.1 * (tMax - tMin));
+    t = max(t, tMin + 0.1 * (tMax - tMin));
 else
     % Bracket is not known. Use extrapolation.
     % Due to how WOLFELS_EO works this situation is only possible when each
@@ -129,14 +123,14 @@ else
         tc = [];
     end
     if abs(d0) < abs(d1)
-        % Fourth case: bracket is not known T0 > T1, F0 < F1, and ABS(D0) <
+        % Quadratic (secant) approximation.
+        ts = t0 - d0*(t1 - t0)/(d1 - d0);
+        % Bracket is not known T0 > T1, F0 < F1, and ABS(D0) <
         % ABS(D1).TC is considered only if it lies beyond T0. TS is also
         % considered since always lies on the correct side.
         t = min([ts, tc, tMax]);
     else
         t = min([tc, tMax]);
     end
-    % Do not let T be too close to T0.
-    t = max(tMin, t);
 end
 

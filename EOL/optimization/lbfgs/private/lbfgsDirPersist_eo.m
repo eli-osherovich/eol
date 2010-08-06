@@ -5,6 +5,10 @@ function d = lbfgsDirPersist_eo(validIdx, wrapAround, grad, PrevSteps, PrevGrads
 % any given moment.
 
 
+% Copyright 2010 Eli Osherovich.
+
+
+
 persistent rho nPrev_old
 
 

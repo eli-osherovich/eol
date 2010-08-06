@@ -56,12 +56,11 @@ Output.initialGradNorm = gradNorm;
 
 % Initial step and search direction scale factor.
 t0 =  1;
-H0 = min(1, 1/norm(grad,1));
+H0 = min(1, 1/gradNorm);
 
 iter = 0;
 validIdx = 0;
 wrapAround = 0;
-func =  @(x) minFunc_wrapper(x, FuncAxStruct, FuncXStruct);
 
 %% Run iterations.
 while ~done
@@ -78,15 +77,15 @@ while ~done
     end
     
     % Calculate d's linear transform (used by line search).
-    % Ad = calculate_linop('forward', FuncAxStruct, d);
+    Ad = calculate_linop('forward', FuncAxStruct, d);
     
     % Save current point data.
     gradOld = grad;
     funcValOld = funcVal;
     
     % Peform line search.
-    [t, x, funcVal, grad, LSoutput] =  wolfeLS_eo(t0, x, funcVal, grad, ...
-        func, d, Options);
+    [t, x, funcVal, grad, Ax, LSoutput] =  wolfeLS_eo(t0, x, funcVal, grad, ...
+        d, Ax, Ad, FuncAxStruct, FuncXStruct, Options);
     funcCount = funcCount + LSoutput.funcCount;
     
     
@@ -177,7 +176,8 @@ if iter > 0
         % tolerance is too strict.
         done = true;
         exitFlag = -4;
-        exitMsg = sprintf('Line-search cound not find a suitable step-length');
+        exitMsg = sprintf('Line-search cound not find a suitable step-length:\n %s\n', ...
+            LSoutput.exitMsg);
         return;
     end
 end

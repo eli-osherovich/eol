@@ -1,16 +1,25 @@
-function [t, val] = quadratic_interpolate(t0, t1, f0, f1, d0)
+function t = quadratic_interpolate(t0, t1, f0, f1, d0)
+
+
+% Copyright 2010 Eli Osherovich.
+
+
+% Convert the original interval [t0, t1] to [0,1].
 h = t1 - t0;
+d0 = d0*h;
 
-% quadratic polinomial coefficients
-p = [f1 - f0 - h*d0, d0, f0];
+% Find quadratic polinomial coefficients: a*x^2 + b*x + c
+a = f1 - f0 - d0;
+b = d0;
+%c = f0;
 
-% location of minimimum
-if f1 - f0 - h*d0 > 0 
-    y = -0.5*d0*h/(f1 - f0 - h*d0);
+% Find minimum of the quadratic
+if a > 0 
+    y = -b/2/a;
 else
-    error('ooops');
+    error('EOL:QUADRATIC_INTERPOLATE:NonConvexParabola', ...
+        'The resulting parabola is not convex: no minimimum exists');
 end
 
-% convert from y to t
+% Convert back to the original interval [t0, t1].
 t = y*h + t0;
-val =  polyval(p, t);

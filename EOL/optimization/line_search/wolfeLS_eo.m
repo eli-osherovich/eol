@@ -1,4 +1,4 @@
-function [t, x, f, g, Output] = wolfeLS_eo(t, x, f, g, func, dir, Options)
+function [t, x, f, g, Ax, Output] = wolfeLS_eo(t, x, f, g, dir, Ax, Adir, FuncAxStruct, FuncXStruct, Options)
 % Line-search routine with strong Wolfe's conditions.
     
     
@@ -13,7 +13,7 @@ f0 = f;
 g0 = g;
 d = real(g0'*dir); % directional derivative
 d0 = d;
-    
+Ax0 = Ax;    
     
 % Get parameters.
 [   maxIter,...         % Maximal number of iterations (20)
@@ -32,11 +32,10 @@ d0 = d;
 
 
 
-% dummy empty cell array (used by calc_EDx)    
-% empty = cell(size(func_Ax_Struct));
+% Dummy empty cell array (used by calc_EDx).
+empty = cell(size(FuncAxStruct));
 
-% preallocate space for Ax
-% Ax = cell(size(Ax0));
+
 
 
 
@@ -93,12 +92,11 @@ while ~done
     
     % Evaluate the function and gradient at the new point.
     x = x0 + t*dir;
-    %     for k = 1:length(func_Ax_Struct)
-    %         Ax{k} = Ax0{k} + t * Adir{k};
-    %     end
-    %     [f, g] = calc_EDx(x, Ax, func_Ax_Struct, func_x_Struct, empty, [], false, ComplexVarsFlag);
+    for k = 1:length(FuncAxStruct)
+            Ax{k} = Ax0{k} + t * Adir{k};
+    end
+    [f, g] = calc_EDx(x, Ax, FuncAxStruct, FuncXStruct, empty, [], false, complexVarsFlag);
     
-    [f, g] = func(x);
     d = real(g'*dir);
     
     % Save current data.
