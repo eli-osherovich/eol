@@ -6,7 +6,6 @@ function benchUO (dirName, fileOutName)
 % 1) MATLAB's fminunc in medium-scale mode.
 % 2) MATLAB's fminunc in large-scale mode.
 % 3) Mark Schmidt's minFunc
-% 4) Eli Osherovich's LBFGS with minFunc's line-search.
 % 5) Eli Osherovich's LBFGS with his own line-search.
 % 6) MATLAB's lsqnonlin in large-scale mode.
 % 7) MATLAB's lsqnonlin in medium-scale mode.
@@ -85,15 +84,6 @@ for i = 1:numel(allSlibs)
     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
             fval, output.firstorderopt, output.iterations, output.funcCount, ...
             status2str(exitflag), 'minFunc' );
-        
-    %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %         LBFGS_EO (with minFunc's line-search       %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    fxStruct = struct('function', @objFuncSOS);
-    [~, fval, exitflag, output] = lbfgsO_eo(x0, [], fxStruct, options);
-    fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
-        fval, output.firstorderopt, output.iterations, output.funcCount, ...
-        status2str(exitflag), 'lbfgsO_eo' );
         
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %         LBFGS_EO                                   %

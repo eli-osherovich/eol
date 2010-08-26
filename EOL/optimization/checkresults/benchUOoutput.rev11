@@ -1,0 +1,324 @@
+Function   F Value         G Norm          Iter    Fcnt    Exit      Algorithm
+-------------------------------------------------------------------------------
+
+almost     4.34809e-19     2.46401e-10     20      22      SmallGrd  medium-scale: Quasi-Newton line search
+almost     4.30708e-16     2.10145e-08     7       8       SmallDcr  large-scale: trust-region Newton
+almost     5.16736e-12     0.000136197     14      16      SmallStp  minFunc
+almost     1.36395e-14     1.06878e-07     11      15      SmallDcr  lbfgs_eo
+almost     1.26218e-28     3.90799e-14     11      12      SmallGrd  large-scale: trust-region reflective Newton
+almost     1.95119e-23     4.47753e-13     5       6       SmallGrd  Levenberg-Marquardt
+
+badscb     1.16955e-16     0.0196307       14      25      SmallStp  medium-scale: Quasi-Newton line search
+badscb     9.45038e+11     1.94426e+06     200     201     MaxIter   large-scale: trust-region Newton
+badscb     1.75126e-13     0.373471        9       18      SmallStp  minFunc
+badscb     1.61447e-18     0.00253055      14      23      LS Err (6) lbfgs_eo
+badscb     9.45038e+11     972130          200     201     MaxIter   large-scale: trust-region reflective Newton
+badscb     1.21973e-19     3.49246e-10     10      16      SmallGrd  Levenberg-Marquardt
+
+badscp     3.17347e-30     2.47385e-11     72      81      SmallGrd  medium-scale: Quasi-Newton line search
+badscp     3.44896e-11     0.105494        27      28      SmallDcr  large-scale: trust-region Newton
+badscp     3.18347e-11     0.115818        45      47      SmallStp  minFunc
+badscp     5.12142e-13     0.0175821       31      47      LS Err (6) lbfgs_eo
+badscp     8.1894e-07      9.09435e-07     7       8       SmallDcr  large-scale: trust-region reflective Newton
+badscp     3.05844e-45     5.09361e-18     13      14      SmallGrd  Levenberg-Marquardt
+
+band       3.05728         8.27042e-09     51      53      SmallGrd  medium-scale: Quasi-Newton line search
+band       6.50252e-13     9.42198e-06     8       9       SmallDcr  large-scale: trust-region Newton
+band       3.94488e-11     0.00017277      14      14      SmallStp  minFunc
+band       1.27226e-12     1.35145e-05     12      13      LS Err (6) lbfgs_eo
+band       1.80113e-30     7.01282e-15     6       7       SmallGrd  large-scale: trust-region reflective Newton
+band       6.24001e-31     3.03821e-15     6       7       SmallGrd  Levenberg-Marquardt
+
+bard       0.00821488      1.24014e-09     22      24      SmallGrd  medium-scale: Quasi-Newton line search
+bard       0.00848209      0.00864431      300     301     MaxIter   large-scale: trust-region Newton
+bard       0.00821488      2.51778e-06     24      24      SmallStp  minFunc
+bard       0.00821488      1.09513e-07     23      24      LS Err (6) lbfgs_eo
+bard       0.00821488      2.7186e-09      5       6       SmallDcr  large-scale: trust-region reflective Newton
+bard       0.00821488      7.96049e-11     6       7       SmallDcr  Levenberg-Marquardt
+
+bd         85822.2         0.000189807     36      37      PredDcr   medium-scale: Quasi-Newton line search
+bd         85822.2         0.0144709       14      15      SmallDcr  large-scale: trust-region Newton
+bd         85822.2         0.000311528     24      24      SmallStp  minFunc
+bd         85822.2         4.7679e-07      21      22      LS Err (6) lbfgs_eo
+bd         85822.2         0.00803162      250     251     SmallDcr  large-scale: trust-region reflective Newton
+bd         85822.2         0.491172        48      79      SmallDcr  Levenberg-Marquardt
+
+beale      2.15943e-19     1.42078e-09     17      18      SmallGrd  medium-scale: Quasi-Newton line search
+beale      6.65365e-25     3.65374e-12     10      11      SmallGrd  large-scale: trust-region Newton
+beale      4.00237e-11     1.25396e-05     15      15      SmallStp  minFunc
+beale      1.94709e-15     3.60612e-07     15      16      LS Err (6) lbfgs_eo
+beale      1.78096e-23     2.02555e-11     8       9       SmallGrd  large-scale: trust-region reflective Newton
+beale      4.93038e-32     6.66134e-16     8       11      SmallGrd  Levenberg-Marquardt
+
+biggs      0.00565565      2.25177e-10     48      50      SmallGrd  medium-scale: Quasi-Newton line search
+biggs      2.9575e-06      6.87278e-05     600     601     MaxIter   large-scale: trust-region Newton
+biggs      0.00565565      3.18822e-05     40      44      SmallStp  minFunc
+biggs      0.00565565      1.19005e-06     41      46      LS Err (6) lbfgs_eo
+biggs      1.47705e-28     1.22677e-14     102     103     SmallGrd  large-scale: trust-region reflective Newton
+biggs      1.02305e-30     5.11303e-16     111     165     SmallGrd  Levenberg-Marquardt
+
+box        8.79947e-18     7.80304e-09     29      38      SmallGrd  medium-scale: Quasi-Newton line search
+box        1.95815e-11     1.83218e-06     28      29      SmallDcr  large-scale: trust-region Newton
+box        4.22893e-11     8.14616e-06     30      35      SmallStp  minFunc
+box        3.41322e-18     1.4199e-09      26      33      LS Err (6) lbfgs_eo
+box        1.30632e-33     6.3266e-17      11      12      SmallGrd  large-scale: trust-region reflective Newton
+box        7.70372e-31     1.6447e-16      7       8       SmallGrd  Levenberg-Marquardt
+
+bv         2.45141e-20     4.72255e-11     33      35      SmallGrd  medium-scale: Quasi-Newton line search
+bv         8.22714e-10     1.27858e-05     122     123     SmallDcr  large-scale: trust-region Newton
+bv         1.03844e-11     4.96487e-05     27      29      SmallStp  minFunc
+bv         1.69125e-12     6.2696e-06      26      30      SmallDcr  lbfgs_eo
+bv         2.80801e-31     1.16789e-16     3       4       SmallGrd  large-scale: trust-region reflective Newton
+bv         2.50371e-33     5.64972e-17     6       7       SmallGrd  Levenberg-Marquardt
+
+cheb       0.00650395      4.95985e-12     27      33      SmallGrd  medium-scale: Quasi-Newton line search
+cheb       0.00650395      8.97778e-06     16      17      SmallDcr  large-scale: trust-region Newton
+cheb       0.00650395      6.19547e-05     24      30      SmallStp  minFunc
+cheb       0.00650395      1.11979e-06     23      29      LS Err (6) lbfgs_eo
+cheb       0.00650396      7.17736e-06     79      80      SmallDcr  large-scale: trust-region reflective Newton
+cheb       0.00650395      3.06624e-08     14      22      SmallDcr  Levenberg-Marquardt
+
+devg1      3.67232e-19     4.52367e-07     56      75      SmallGrd  medium-scale: Quasi-Newton line search
+devg1      0.00162973      2.57849         400     401     MaxIter   large-scale: trust-region Newton
+devg1      2.39938e-11     0.00289134      63      83      SmallStp  minFunc
+devg1      1.96987e-16     7.65327e-06     58      81      LS Err (6) lbfgs_eo
+devg1      140648          25591.9         400     401     MaxIter   large-scale: trust-region reflective Newton
+devg1      1.51527e-23     1.82623e-11     24      38      SmallGrd  Levenberg-Marquardt
+
+devg2      4.54977e-15     1.98955e-06     68      79      SmallGrd  medium-scale: Quasi-Newton line search
+devg2      33183.1         50693.4         500     501     MaxIter   large-scale: trust-region Newton
+devg2      2.59183e-11     0.000170221     58      64      SmallStp  minFunc
+devg2      3.46855e-15     1.01028e-05     53      69      LS Err (6) lbfgs_eo
+devg2      2.93456e-28     2.91645e-12     11      12      SmallGrd  large-scale: trust-region reflective Newton
+devg2      3.38737e-27     1.85378e-11     20      29      SmallGrd  Levenberg-Marquardt
+
+dgv6       2.63977e-25     7.44301e-12     364     464     SmallGrd  medium-scale: Quasi-Newton line search
+dgv6       1.12655e-14     4.84064e-09     91      92      SmallDcr  large-scale: trust-region Newton
+dgv6       2.14702e-11     0.000328902     374     482     SmallStp  minFunc
+dgv6       1.3335e-13      2.43675e-05     281     353     LS Err (6) lbfgs_eo
+dgv6       1.17249e-25     1.93094e-11     49      50      SmallGrd  large-scale: trust-region reflective Newton
+dgv6       5.1642e-32      1.50856e-14     103     152     SmallDD   Levenberg-Marquardt
+
+dgv8       1.94119e-23     4.25256e-11     546     711     SmallGrd  medium-scale: Quasi-Newton line search
+dgv8       1.10892e-12     5.00975e-08     411     412     SmallDcr  large-scale: trust-region Newton
+dgv8       6.79471e-11     0.000844432     408     516     SmallStp  minFunc
+dgv8       3.12631e-12     0.000194437     341     431     SmallDcr  lbfgs_eo
+dgv8       5.56195e-25     3.90537e-11     51      52      SmallGrd  large-scale: trust-region reflective Newton
+dgv8       4.12457e-34     2.59091e-16     140     208     SmallGrd  Levenberg-Marquardt
+
+froth      48.9843         4.61913e-08     21      22      SmallGrd  medium-scale: Quasi-Newton line search
+froth      48.9843         3.76811e-07     11      12      SmallStp  large-scale: trust-region Newton
+froth      48.9843         4.24113e-06     20      21      SmallStp  minFunc
+froth      48.9843         5.34909e-06     20      21      SmallDcr  lbfgs_eo
+froth      48.9843         0.000316366     30      31      SmallDcr  large-scale: trust-region reflective Newton
+froth      48.9843         0.000167531     19      31      SmallDcr  Levenberg-Marquardt
+
+gauss      1.12793e-08     1.55948e-13     4       7       SmallGrd  medium-scale: Quasi-Newton line search
+gauss      1.12793e-08     8.41751e-11     2       3       SmallGrd  large-scale: trust-region Newton
+gauss      1.17868e-08     1.30329e-05     2       3       SmallStp  minFunc
+gauss      1.17672e-08     1.16724e-05     2       4       LS Err (6) lbfgs_eo
+gauss      1.12793e-08     5.92848e-13     2       3       SmallGrd  large-scale: trust-region reflective Newton
+gauss      1.12793e-08     5.14777e-16     4       5       SmallDcr  Levenberg-Marquardt
+
+gulf       3.56257e-19     1.19147e-09     137     195     SmallGrd  medium-scale: Quasi-Newton line search
+gulf       0.0385          0               2       3       SmallStp  large-scale: trust-region Newton
+gulf       0.0384994       3.68436e-05     2       2       SmallStp  minFunc
+gulf       0.0385          2.37551e-06     2       3       LS Err (6) lbfgs_eo
+gulf       8.8701e-25      1.57186e-12     78      79      SmallGrd  large-scale: trust-region reflective Newton
+gulf       2.23889e-33     3.79893e-17     213     315     SmallGrd  Levenberg-Marquardt
+
+han1       208.7           5.7518e-07      18      22      SmallGrd  medium-scale: Quasi-Newton line search
+han1       208.7           7.0599e-07      14      15      SmallDcr  large-scale: trust-region Newton
+han1       208.7           0.00175386      18      21      SmallStp  minFunc
+han1       208.7           2.96036e-06     8       17      SmallDcr  lbfgs_eo
+han1       208.7           0.022722        17      18      SmallDcr  large-scale: trust-region reflective Newton
+han1       208.7           0.0227311       17      18      SmallDcr  Levenberg-Marquardt
+
+han2       39.6643         7.70619e-07     28      34      PredDcr   medium-scale: Quasi-Newton line search
+han2       39.669          0.841623        300     301     MaxIter   large-scale: trust-region Newton
+han2       39.6643         0.00372108      17      29      SmallStp  minFunc
+han2       39.6643         1.88005e-06     25      34      LS Err (6) lbfgs_eo
+han2       39.6643         0.00725025      21      22      SmallDcr  large-scale: trust-region reflective Newton
+han2       39.6643         0.0047786       21      23      SmallDcr  Levenberg-Marquardt
+
+helix      7.29059e-22     6.91658e-10     31      33      SmallGrd  medium-scale: Quasi-Newton line search
+helix      0.0440587       0.634151        300     301     MaxIter   large-scale: trust-region Newton
+helix      3.094e-11       9.69489e-05     29      33      SmallStp  minFunc
+helix      7.87567e-16     8.68054e-07     26      28      LS Err (6) lbfgs_eo
+helix      1.13099e-38     1.69258e-18     12      13      SmallGrd  large-scale: trust-region reflective Newton
+helix      4.07603e-26     2.66733e-12     8       11      SmallGrd  Levenberg-Marquardt
+
+ie         1.83618e-21     4.95477e-11     9       11      SmallGrd  medium-scale: Quasi-Newton line search
+ie         6.04965e-15     7.48955e-08     4       5       SmallDcr  large-scale: trust-region Newton
+ie         1.4709e-11      2.03154e-05     6       6       SmallStp  minFunc
+ie         9.71914e-15     2.17465e-07     5       7       SmallDcr  lbfgs_eo
+ie         4.10029e-29     3.55864e-15     3       4       SmallGrd  large-scale: trust-region reflective Newton
+ie         1.30482e-31     2.09523e-16     4       5       SmallGrd  Levenberg-Marquardt
+
+jensam     124.362         3.73138e-06     17      42      SmallGrd  medium-scale: Quasi-Newton line search
+jensam     124.362         3.85254e-06     10      11      SmallStp  large-scale: trust-region Newton
+jensam     124.362         2.13636e-05     19      40      SmallStp  minFunc
+jensam     124.362         8.04115e-06     19      49      LS Err (6) lbfgs_eo
+jensam     124.362         1.574e-06       30      31      SmallDcr  large-scale: trust-region reflective Newton
+jensam     614.588         8936.1          56      89      SmallDcr  Levenberg-Marquardt
+
+kowosb     0.000307506     5.57911e-11     36      40      SmallGrd  medium-scale: Quasi-Newton line search
+kowosb     0.000307509     1.2523e-05      312     313     SmallDcr  large-scale: trust-region Newton
+kowosb     0.000307506     8.5971e-07      26      31      SmallStp  minFunc
+kowosb     0.000307506     7.59599e-08     26      30      LS Err (6) lbfgs_eo
+kowosb     0.000307506     6.75991e-07     14      15      SmallDcr  large-scale: trust-region reflective Newton
+kowosb     0.000307506     8.5823e-09      26      28      SmallDcr  Levenberg-Marquardt
+
+lin        10              2.22045e-16     2       3       SmallGrd  medium-scale: Quasi-Newton line search
+lin        10              3.91909e-14     2       3       SmallGrd  large-scale: trust-region Newton
+lin        10              4.44089e-16     2       4       SmallGrd  minFunc
+lin        10              3.14018e-16     2       3       MaxIter   lbfgs_eo
+lin        10              8.88178e-16     1       2       SmallGrd  large-scale: trust-region reflective Newton
+lin        10              1.97897e-13     4       6       SmallDcr  Levenberg-Marquardt
+
+lin0       6.13514         1.91136e-11     2       3       SmallGrd  medium-scale: Quasi-Newton line search
+lin0       6.13514         5.54053e-10     2       3       SmallStp  large-scale: trust-region Newton
+lin0       6.13514         5.53322e-09     3       3       SmallStp  minFunc
+lin0       6.13514         2.79839e-10     2       3       MaxIter   lbfgs_eo
+lin0       6.13514         5.78879e-11     1       2       SmallGrd  large-scale: trust-region reflective Newton
+lin0       6.13514         2.41229e-11     2       3       SmallGrd  Levenberg-Marquardt
+
+lin1       4.63415         4.72937e-11     2       3       SmallGrd  medium-scale: Quasi-Newton line search
+lin1       4.63415         4.72937e-11     1       2       SmallGrd  large-scale: trust-region Newton
+lin1       4.63415         3.87154e-08     3       3       SmallStp  minFunc
+lin1       4.63415         6.92921e-10     2       3       MaxIter   lbfgs_eo
+lin1       4.63415         2.36327e-11     1       2       SmallGrd  large-scale: trust-region reflective Newton
+lin1       4.63415         4.91269e-11     2       3       SmallGrd  Levenberg-Marquardt
+
+mck1       0.162385        2.48981e-10     11      14      SmallGrd  medium-scale: Quasi-Newton line search
+mck1       0.162385        4.57911e-13     5       6       SmallGrd  large-scale: trust-region Newton
+mck1       0.162385        2.52171e-06     6       9       SmallStp  minFunc
+mck1       0.162385        1.44769e-06     7       10      LS Err (6) lbfgs_eo
+mck1       0.162385        8.56476e-06     28      29      SmallDcr  large-scale: trust-region reflective Newton
+mck1       0.162385        4.01998e-06     26      45      SmallDcr  Levenberg-Marquardt
+
+mck2       0.796555        1.54674e-10     12      15      SmallGrd  medium-scale: Quasi-Newton line search
+mck2       0.796555        2.2205e-05      22      23      SmallDcr  large-scale: trust-region Newton
+mck2       0.796555        2.53501e-06     8       11      SmallStp  minFunc
+mck2       0.796555        1.11013e-08     11      14      LS Err (6) lbfgs_eo
+mck2       0.796555        2.51382e-05     42      43      SmallDcr  large-scale: trust-region reflective Newton
+mck2       0.796555        4.07017e-05     19      32      SmallDcr  Levenberg-Marquardt
+
+mck3       1               3.548e-09       16      19      PredDcr   medium-scale: Quasi-Newton line search
+mck3       1               3.38848e-07     8       9       SmallDcr  large-scale: trust-region Newton
+mck3       1               4.35506e-05     10      11      SmallStp  minFunc
+mck3       1               2.0211e-07      11      13      LS Err (6) lbfgs_eo
+mck3       1               6.06384e-06     20      21      SmallDcr  large-scale: trust-region reflective Newton
+mck3       1               1.01182e-06     9       18      SmallDcr  Levenberg-Marquardt
+
+meyer      7072.49         6.93566e+07     214     300     MaxIter   medium-scale: Quasi-Newton line search
+meyer      101537          7939.4          300     301     MaxIter   large-scale: trust-region Newton
+meyer      87.9459         80.2531         380     506     SmallStp  minFunc
+meyer      87.9459         0.104088        367     490     LS Err (6) lbfgs_eo
+meyer      87.9459         0.00072035      51      52      SmallDcr  large-scale: trust-region reflective Newton
+meyer      87.9459         0.000353441     219     328     SmallGrd  Levenberg-Marquardt
+
+msqrt2     5.33597e-09     9.84905e-05     301     400     MaxIter   medium-scale: Quasi-Newton line search
+msqrt2     4.58458e-05     0.00101366      400     401     MaxIter   large-scale: trust-region Newton
+msqrt2     1.73821e-08     0.000177499     210     268     SmallStp  minFunc
+msqrt2     2.52615e-08     3.19197e-06     188     240     SmallDcr  lbfgs_eo
+msqrt2     3.21337e-10     2.69855e-06     246     247     SmallDcr  large-scale: trust-region reflective Newton
+msqrt2     1.24046e-09     3.39887e-06     535     801     MaxIter   Levenberg-Marquardt
+
+msqrt3     4.8998e-10      2.91782e-06     679     900     MaxIter   medium-scale: Quasi-Newton line search
+msqrt3     2.49494e-06     1.47484e-05     606     607     SmallDcr  large-scale: trust-region Newton
+msqrt3     1.8111e-08      0.000339195     222     276     SmallStp  minFunc
+msqrt3     1.7393e-08      1.00922e-05     230     292     SmallDcr  lbfgs_eo
+msqrt3     7.08737e-11     1.66373e-06     445     446     SmallDcr  large-scale: trust-region reflective Newton
+msqrt3     4.16275e-10     2.5777e-07      1001    1500    MaxIter   Levenberg-Marquardt
+
+osb1       5.46489e-05     2.0134e-08      95      117     SmallGrd  medium-scale: Quasi-Newton line search
+osb1       7.5836e-05      0.000709405     500     501     MaxIter   large-scale: trust-region Newton
+osb1       7.70537e-05     0.000834897     30      38      SmallStp  minFunc
+osb1       7.70264e-05     0.00065768      25      36      SmallDcr  lbfgs_eo
+osb1       5.46489e-05     1.57442e-10     9       10      SmallDcr  large-scale: trust-region reflective Newton
+osb1       5.46489e-05     3.47672e-10     36      51      SmallDcr  Levenberg-Marquardt
+
+osb2       0.0401683       4.47434e-09     80      86      PredDcr   medium-scale: Quasi-Newton line search
+osb2       0.0401683       1.86146e-05     52      53      SmallDcr  large-scale: trust-region Newton
+osb2       0.0401683       5.72161e-05     69      74      SmallStp  minFunc
+osb2       0.0401683       1.23046e-06     68      76      LS Err (6) lbfgs_eo
+osb2       0.0401683       1.17644e-07     13      14      SmallDcr  large-scale: trust-region reflective Newton
+osb2       0.0401683       3.15688e-08     11      14      SmallDcr  Levenberg-Marquardt
+
+pen1       2.24998e-05     3.88975e-08     56      73      SmallGrd  medium-scale: Quasi-Newton line search
+pen1       2.24998e-05     3.03885e-08     39      40      SmallDcr  large-scale: trust-region Newton
+pen1       2.24998e-05     8.20227e-06     51      67      SmallStp  minFunc
+pen1       2.24998e-05     6.45677e-06     48      64      LS Err (6) lbfgs_eo
+pen1       2.24998e-05     8.21363e-14     16      17      SmallGrd  large-scale: trust-region reflective Newton
+pen1       2.24998e-05     4.79377e-10     28      42      SmallDcr  Levenberg-Marquardt
+
+pen2       9.48599e-06     7.21271e-05     293     400     MaxIter   medium-scale: Quasi-Newton line search
+pen2       9.52174e-06     2.53772e-06     21      22      SmallDcr  large-scale: trust-region Newton
+pen2       9.46757e-06     4.98085e-05     10      11      SmallStp  minFunc
+pen2       9.80271e-06     2.4228e-06      14      20      LS Err (6) lbfgs_eo
+pen2       9.37633e-06     3.72602e-06     39      40      SmallDcr  large-scale: trust-region reflective Newton
+pen2       9.37629e-06     8.48983e-09     135     201     SmallDcr  Levenberg-Marquardt
+
+rose       1.62567e-26     4.81171e-12     38      48      SmallGrd  medium-scale: Quasi-Newton line search
+rose       4.90187e-23     6.86347e-11     28      29      SmallGrd  large-scale: trust-region Newton
+rose       8.38151e-14     1.73732e-05     36      44      SmallStp  minFunc
+rose       1.04911e-15     3.65968e-07     36      45      LS Err (6) lbfgs_eo
+rose       4.93038e-32     2.22045e-16     23      24      SmallGrd  large-scale: trust-region reflective Newton
+rose       1.02272e-25     1.33227e-13     29      43      SmallGrd  Levenberg-Marquardt
+
+rosex      1.03073e-25     4.82459e-12     38      48      SmallGrd  medium-scale: Quasi-Newton line search
+rosex      4.77261e-28     1.95399e-14     28      29      SmallGrd  large-scale: trust-region Newton
+rosex      4.14772e-15     3.58444e-07     35      47      SmallStp  minFunc
+rosex      5.25836e-17     3.09948e-08     35      44      LS Err (6) lbfgs_eo
+rosex      6.16298e-30     2.22045e-14     20      21      SmallGrd  large-scale: trust-region reflective Newton
+rosex      5.1136e-25      1.33227e-13     29      43      SmallGrd  Levenberg-Marquardt
+
+sing       4.57967e-12     1.98751e-08     43      44      SmallGrd  medium-scale: Quasi-Newton line search
+sing       8.61466e-09     3.2761e-06      170     171     SmallDcr  large-scale: trust-region Newton
+sing       6.53846e-11     3.06993e-05     36      37      SmallStp  minFunc
+sing       3.53452e-08     3.93013e-05     28      29      LS Err (6) lbfgs_eo
+sing       5.71987e-13     2.32831e-09     12      13      SmallDcr  large-scale: trust-region reflective Newton
+sing       8.73517e-18     5.68704e-13     16      17      SmallGrd  Levenberg-Marquardt
+
+singx      1.3739e-11      1.98751e-08     43      44      SmallGrd  medium-scale: Quasi-Newton line search
+singx      2.2524e-11      3.07675e-08     19      20      SmallDcr  large-scale: trust-region Newton
+singx      4.14661e-11     5.1172e-05      38      39      SmallStp  minFunc
+singx      2.66677e-10     1.98194e-06     31      33      SmallDcr  lbfgs_eo
+singx      1.71596e-12     2.32831e-09     12      13      SmallDcr  large-scale: trust-region reflective Newton
+singx      2.62055e-17     5.68704e-13     16      17      SmallGrd  Levenberg-Marquardt
+
+trid       1.92633e-21     3.43689e-10     21      22      SmallGrd  medium-scale: Quasi-Newton line search
+trid       4.80597e-13     3.80947e-06     7       8       SmallDcr  large-scale: trust-region Newton
+trid       1.00796e-11     8.12045e-05     15      16      SmallStp  minFunc
+trid       1.98621e-13     5.12045e-06     17      19      LS Err (6) lbfgs_eo
+trid       2.47752e-30     6.84736e-15     5       6       SmallGrd  large-scale: trust-region reflective Newton
+trid       1.19562e-30     4.95219e-15     5       6       SmallGrd  Levenberg-Marquardt
+
+trig       2.79506e-05     6.69596e-11     32      34      SmallGrd  medium-scale: Quasi-Newton line search
+trig       2.79506e-05     1.5434e-07      14      15      SmallDcr  large-scale: trust-region Newton
+trig       2.79506e-05     1.16746e-05     25      26      SmallStp  minFunc
+trig       2.79506e-05     3.67804e-07     25      27      LS Err (6) lbfgs_eo
+trig       1.07952e-22     4.82032e-12     13      14      SmallGrd  large-scale: trust-region reflective Newton
+trig       2.79506e-05     5.40248e-09     41      64      SmallDcr  Levenberg-Marquardt
+
+vardim     0               0               1       2       SmallGrd  medium-scale: Quasi-Newton line search
+vardim     4.05657e-22     1.42643e-10     15      16      SmallDcr  large-scale: trust-region Newton
+vardim     3.30272e-18     2.00167e-07     21      21      SmallStp  minFunc
+vardim     7.66391e-24     1.0878e-10      19      20      LS Err (6) lbfgs_eo
+vardim     0               0               10      11      SmallGrd  large-scale: trust-region reflective Newton
+vardim     0               0               10      11      SmallGrd  Levenberg-Marquardt
+
+watson     2.03132e-10     2.91909e-09     171     178     SmallGrd  medium-scale: Quasi-Newton line search
+watson     3.84082e-08     5.14413e-06     21      22      SmallDcr  large-scale: trust-region Newton
+watson     7.28178e-06     0.000462869     49      55      SmallStp  minFunc
+watson     7.30781e-06     0.000765104     58      66      LS Err (6) lbfgs_eo
+watson     1.81515e-10     4.22482e-09     9       10      SmallDcr  large-scale: trust-region reflective Newton
+watson     7.95308e-15     1.652e-13       10      11      SmallGrd  Levenberg-Marquardt
+
+wood       1.2037e-16      2.35033e-07     38      46      SmallGrd  medium-scale: Quasi-Newton line search
+wood       6.24512e-10     2.61601e-05     280     281     SmallDcr  large-scale: trust-region Newton
+wood       7.68473e-13     2.20953e-05     85      103     SmallStp  minFunc
+wood       3.22086e-13     2.15493e-05     88      114     LS Err (6) lbfgs_eo
+wood       0               0               69      70      SmallGrd  large-scale: trust-region reflective Newton
+wood       3.03773e-24     6.76315e-13     72      101     SmallGrd  Levenberg-Marquardt

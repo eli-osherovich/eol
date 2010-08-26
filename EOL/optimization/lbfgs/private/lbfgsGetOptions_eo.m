@@ -48,7 +48,7 @@ tolFun = getOpt_eo(options, 'tolFun', 1e-8);
 tolGrad = getOpt_eo(options, 'tolGrad', 1e-8);
 
 % display type (progress report)
-display = getOpt_eo(options, 'Display', false);
+display = getOpt_eo(options, 'Display', true);
 
 % allow also on/off settings for Display
 if strcmpi(display, 'off')

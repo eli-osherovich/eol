@@ -6,6 +6,17 @@ function [x, funcVal, Output] = lbfgs_eo(x0, FuncAxStruct, ...
 % Copyright 2010 Eli Osherovich.
 
 
+
+% Save the original shape of x0. While working internally with a column
+% vector, we will reshape x to its original shape on exit.
+xOrigSize = size(x0);
+
+
+%% Use default options if Options is not provided or empty.
+if nargin < 4
+    Options = struct();
+end
+
 %% Set parameters (default value)
 [   x,...               % Initial x: obtained from x0 by converting
     ...                 % to column vector and changing type to
@@ -17,7 +28,7 @@ function [x, funcVal, Output] = lbfgs_eo(x0, FuncAxStruct, ...
     tolX, ...           % Step size tolerance (1e-8)
     tolFun, ...         % Function value tolerance (1e-8)
     tolGrad,...         % Gradient norm tolerance (1e-8)
-    display...          % Progress report (false)
+    display...          % Progress report (true)
     ] = lbfgsGetOptions_eo(x0, Options);
 
 %% Variables initialization and memory allocation.
@@ -118,6 +129,9 @@ if display
     fprintf('%s\n', exitMsg);
 end
 
+% Reshape x to its original size.
+x = reshape(x, xOrigSize);
+
 % Set output struct fields.
 Output.finalFval = funcVal;
 Output.firstOrderOpt = gradNorm;
@@ -125,8 +139,17 @@ Output.nIterations = iter;
 Output.funcCount = funcCount;
 Output.exitMsg = exitMsg;
 Output.exitFlag = exitFlag;
-Output.lsExitMsg = LSoutput.exitMsg;
-Output.lsExitFlag = LSoutput.exitFlag; 
+
+% Make sure that we use LSoutput only if the linesearch was called at least
+% once.
+if iter > 0
+    Output.lsExitMsg = LSoutput.exitMsg;
+    Output.lsExitFlag = LSoutput.exitFlag;
+else
+   Output.lsExitMsg = '';
+   Output.lsExitFlag = NaN;
+end
+
 
 function [done, exitFlag, exitMsg] = testTermCriteria(...
     iter, x, grad, funcVal, ...
@@ -183,7 +206,7 @@ if iter > 0
 end
     
 
-% If gradint's norm is small (below tolGrad) we probably found a local
+% If gradient's norm is small (below tolGrad) we probably found a local
 % minimum. Hence, exit status is zero which indicates a success.
 if gradNorm <= tolGrad
     done = true;

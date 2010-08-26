@@ -1,0 +1,186 @@
+Function   F Value         G Norm          Iter    Fcnt    Exit      Algorithm
+-------------------------------------------------------------------------------
+
+almost     5.16736e-12     0.000136197     14      16      SmallStp  minFunc
+almost     3.84677e-14     1.26397e-06     14      17      SmallDcr  lbfgs_eo
+almost     5.33977e-15     1.42484e-06     14      17      SmallDcr  lbfgsT_eo
+
+badscb     1.75126e-13     0.373471        9       18      SmallStp  minFunc
+badscb     1.35611e-20     5.84865e-06     9       19      SmallDcr  lbfgs_eo
+badscb     6.08813e-25     1.56053e-06     11      21      SmallDcr  lbfgsT_eo
+
+badscp     3.18347e-11     0.115818        45      47      SmallStp  minFunc
+badscp     1.39228e-12     0.0271946       45      48      SmallDcr  lbfgs_eo
+badscp     2.06254e-12     0.000218267     29      40      SmallDcr  lbfgsT_eo
+
+band       3.94488e-11     0.00017277      14      14      SmallStp  minFunc
+band       3.05552e-13     8.135e-06       14      15      SmallDcr  lbfgs_eo
+band       3.05552e-13     8.135e-06       14      15      SmallDcr  lbfgsT_eo
+
+bard       0.00821488      2.51778e-06     24      24      SmallStp  minFunc
+bard       0.00821488      1.14615e-08     24      25      SmallDcr  lbfgs_eo
+bard       0.00821488      1.14615e-08     24      25      SmallDcr  lbfgsT_eo
+
+bd         85822.2         0.000311528     24      24      SmallStp  minFunc
+bd         85822.2         2.08984e-06     24      25      SmallDcr  lbfgs_eo
+bd         85822.2         2.08984e-06     24      25      SmallDcr  lbfgsT_eo
+
+beale      4.00237e-11     1.25396e-05     15      15      SmallStp  minFunc
+beale      1.94709e-15     3.60612e-07     15      16      SmallDcr  lbfgs_eo
+beale      1.94709e-15     3.60612e-07     15      16      SmallDcr  lbfgsT_eo
+
+biggs      0.00565565      3.18822e-05     40      44      SmallStp  minFunc
+biggs      0.00565565      2.6558e-06      40      45      SmallDcr  lbfgs_eo
+biggs      0.00565565      5.36694e-06     38      42      SmallDcr  lbfgsT_eo
+
+box        4.22893e-11     8.14616e-06     30      35      SmallStp  minFunc
+box        9.49992e-14     9.32156e-07     30      36      SmallDcr  lbfgs_eo
+box        1.3227e-14      6.96232e-08     31      38      SmallDcr  lbfgsT_eo
+
+bv         1.03844e-11     4.96487e-05     27      29      SmallStp  minFunc
+bv         3.73498e-14     7.92284e-07     27      30      SmallDcr  lbfgs_eo
+bv         3.7351e-14      7.92322e-07     27      30      SmallDcr  lbfgsT_eo
+
+cheb       0.00650395      6.19547e-05     24      30      SmallStp  minFunc
+cheb       0.00650395      4.11919e-06     24      31      SmallDcr  lbfgs_eo
+cheb       0.00650395      7.46062e-07     23      28      SmallDcr  lbfgsT_eo
+
+devg1      2.39938e-11     0.00289134      63      83      SmallStp  minFunc
+devg1      3.79212e-19     3.2318e-07      63      84      SmallDcr  lbfgs_eo
+devg1      1.33177e-16     1.18473e-05     60      90      SmallDcr  lbfgsT_eo
+
+devg2      2.59183e-11     0.000170221     58      64      SmallStp  minFunc
+devg2      3.83298e-13     2.69363e-05     58      65      SmallDcr  lbfgs_eo
+devg2      7.68154e-12     0.000359879     58      64      SmallDcr  lbfgsT_eo
+
+dgv6       2.14702e-11     0.000328902     374     482     SmallStp  minFunc
+dgv6       1.16774e-12     0.000111521     384     489     SmallDcr  lbfgs_eo
+dgv6       3.33653e-12     0.000208569     416     520     SmallDcr  lbfgsT_eo
+
+dgv8       6.79471e-11     0.000844432     408     516     SmallStp  minFunc
+dgv8       1.25682e-14     9.88017e-06     321     408     SmallDcr  lbfgs_eo
+dgv8       2.91001e-14     1.52161e-05     363     455     SmallDcr  lbfgsT_eo
+
+froth      48.9843         4.24113e-06     20      21      SmallStp  minFunc
+froth      48.9843         4.23179e-06     20      21      SmallDcr  lbfgs_eo
+froth      48.9843         4.23179e-06     20      21      SmallDcr  lbfgsT_eo
+
+gauss      1.17868e-08     1.30329e-05     2       3       SmallStp  minFunc
+gauss      1.14177e-08     6.43463e-06     4       9       SmallDcr  lbfgs_eo
+gauss      1.13989e-08     6.21238e-06     4       9       SmallDcr  lbfgsT_eo
+
+gulf       0.0384994       3.68436e-05     2       2       SmallStp  minFunc
+gulf       0.00419871      0.000259377     3       16      SmallDcr  lbfgs_eo
+gulf       0.00419871      0.000259517     3       23      SmallDcr  lbfgsT_eo
+
+han1       208.7           0.00175386      18      21      SmallStp  minFunc
+han1       208.7           1.77683e-06     18      22      SmallDcr  lbfgs_eo
+han1       208.7           1.20912e-06     18      22      SmallDcr  lbfgsT_eo
+
+han2       39.6643         0.00372108      17      29      SmallStp  minFunc
+han2       39.6643         3.40565e-05     17      30      SmallDcr  lbfgs_eo
+han2       39.6643         7.47455e-05     27      31      SmallDcr  lbfgsT_eo
+
+helix      3.094e-11       9.69489e-05     29      33      SmallStp  minFunc
+helix      1.61405e-13     8.47856e-06     29      34      SmallDcr  lbfgs_eo
+helix      5.71603e-13     1.50042e-05     29      33      SmallDcr  lbfgsT_eo
+
+ie         1.4709e-11      2.03154e-05     6       6       SmallStp  minFunc
+ie         4.52885e-13     1.45466e-06     6       7       SmallDcr  lbfgs_eo
+ie         4.52885e-13     1.45466e-06     6       7       SmallDcr  lbfgsT_eo
+
+jensam     124.362         2.13636e-05     19      40      SmallStp  minFunc
+jensam     124.362         2.10813e-05     19      42      SmallStp  lbfgs_eo
+jensam     124.362         1.76261e-06     24      35      SmallStp  lbfgsT_eo
+
+kowosb     0.000307506     8.5971e-07      26      31      SmallStp  minFunc
+kowosb     0.000307506     7.18145e-07     26      31      SmallDcr  lbfgs_eo
+kowosb     0.000307506     1.22018e-06     29      34      SmallDcr  lbfgsT_eo
+
+lin        10              4.44089e-16     2       4       SmallGrd  minFunc
+lin        10              3.14018e-16     2       4       SmallGrd  lbfgs_eo
+lin        10              3.14018e-16     2       4       SmallGrd  lbfgsT_eo
+
+lin0       6.13514         5.53322e-09     3       3       SmallStp  minFunc
+lin0       6.13514         2.68747e-09     2       3       SmallGrd  lbfgs_eo
+lin0       6.13514         2.68747e-09     2       3       SmallGrd  lbfgsT_eo
+
+lin1       4.63415         3.87154e-08     3       3       SmallStp  minFunc
+lin1       4.63415         7.33638e-12     3       4       SmallGrd  lbfgs_eo
+lin1       4.63415         7.33638e-12     3       4       SmallGrd  lbfgsT_eo
+
+mck1       0.162385        2.52171e-06     6       9       SmallStp  minFunc
+mck1       0.162385        2.02661e-06     6       9       SmallDcr  lbfgs_eo
+mck1       0.162385        7.48358e-07     7       9       SmallDcr  lbfgsT_eo
+
+mck2       0.796555        2.53501e-06     8       11      SmallStp  minFunc
+mck2       0.796555        1.76838e-06     8       11      SmallDcr  lbfgs_eo
+mck2       0.796555        1.79788e-08     10      12      SmallDcr  lbfgsT_eo
+
+mck3       1               4.35506e-05     10      11      SmallStp  minFunc
+mck3       1               3.57292e-06     10      12      SmallDcr  lbfgs_eo
+mck3       1               7.12427e-07     10      12      SmallDcr  lbfgsT_eo
+
+meyer      87.9459         80.2531         380     506     SmallStp  minFunc
+meyer      87.9459         227.745         371     506     SmallStp  lbfgs_eo
+meyer      87.9459         0.52596         381     516     SmallStp  lbfgsT_eo
+
+msqrt2     1.73821e-08     0.000177499     210     268     SmallStp  minFunc
+msqrt2     2.78354e-08     0.00020489      183     235     SmallDcr  lbfgs_eo
+msqrt2     1.84474e-08     0.00018969      225     279     SmallDcr  lbfgsT_eo
+
+msqrt3     1.8111e-08      0.000339195     222     276     SmallStp  minFunc
+msqrt3     2.33305e-08     0.000208239     210     268     SmallDcr  lbfgs_eo
+msqrt3     1.86844e-08     0.000197046     227     290     SmallDcr  lbfgsT_eo
+
+osb1       7.70537e-05     0.000834897     30      38      SmallStp  minFunc
+osb1       7.70536e-05     0.000160934     30      39      SmallDcr  lbfgs_eo
+osb1       7.70574e-05     0.000117645     27      37      SmallDcr  lbfgsT_eo
+
+osb2       0.0401683       5.72161e-05     69      74      SmallStp  minFunc
+osb2       0.0401683       7.28047e-06     69      75      SmallDcr  lbfgs_eo
+osb2       0.0401683       2.50868e-06     68      75      SmallDcr  lbfgsT_eo
+
+pen1       2.24998e-05     8.20227e-06     51      67      SmallStp  minFunc
+pen1       2.24998e-05     8.37548e-07     51      68      SmallDcr  lbfgs_eo
+pen1       2.24998e-05     5.70973e-06     51      65      SmallDcr  lbfgsT_eo
+
+pen2       9.46757e-06     4.98085e-05     10      11      SmallStp  minFunc
+pen2       9.46754e-06     1.44631e-06     10      12      SmallDcr  lbfgs_eo
+pen2       9.46919e-06     1.1742e-06      12      14      SmallDcr  lbfgsT_eo
+
+rose       8.38151e-14     1.73732e-05     36      44      SmallStp  minFunc
+rose       6.4317e-17      3.33055e-07     36      45      SmallDcr  lbfgs_eo
+rose       2.49322e-16     6.7131e-07      37      44      SmallDcr  lbfgsT_eo
+
+rosex      4.14772e-15     3.58444e-07     35      47      SmallStp  minFunc
+rosex      4.14772e-15     1.15613e-07     35      47      SmallDcr  lbfgs_eo
+rosex      4.63645e-15     2.07886e-06     36      47      SmallDcr  lbfgsT_eo
+
+sing       6.53846e-11     3.06993e-05     36      37      SmallStp  minFunc
+sing       2.02446e-11     1.96252e-06     36      38      SmallDcr  lbfgs_eo
+sing       2.02446e-11     1.96252e-06     36      38      SmallDcr  lbfgsT_eo
+
+singx      4.14661e-11     5.1172e-05      38      39      SmallStp  minFunc
+singx      4.14661e-11     2.1755e-05      38      39      SmallDcr  lbfgs_eo
+singx      4.14661e-11     2.1755e-05      38      39      SmallDcr  lbfgsT_eo
+
+trid       1.00796e-11     8.12045e-05     15      16      SmallStp  minFunc
+trid       1.00796e-11     2.96162e-05     15      16      SmallDcr  lbfgs_eo
+trid       1.00796e-11     2.96162e-05     15      16      SmallDcr  lbfgsT_eo
+
+trig       2.79506e-05     1.16746e-05     25      26      SmallStp  minFunc
+trig       2.79506e-05     3.67804e-07     25      27      SmallDcr  lbfgs_eo
+trig       2.79506e-05     2.75345e-07     26      28      SmallDcr  lbfgsT_eo
+
+vardim     3.30272e-18     2.00167e-07     21      21      SmallStp  minFunc
+vardim     1.18329e-30     3.93226e-14     21      22      SmallGrd  lbfgs_eo
+vardim     1.18329e-30     3.93226e-14     21      22      SmallGrd  lbfgsT_eo
+
+watson     7.28178e-06     0.000462869     49      55      SmallStp  minFunc
+watson     7.28178e-06     0.000128181     49      55      SmallDcr  lbfgs_eo
+watson     2.69611e-07     5.16147e-06     49      55      SmallDcr  lbfgsT_eo
+
+wood       7.68473e-13     2.20953e-05     85      103     SmallStp  minFunc
+wood       3.82612e-16     4.24394e-07     83      100     SmallDcr  lbfgs_eo
+wood       3.19912e-13     2.09319e-05     84      108     SmallDcr  lbfgsT_eo
