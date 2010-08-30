@@ -12,7 +12,7 @@ x0 = x;
 f0 = f;
 g0 = g;
 d = real(g0'*dir); % directional derivative
-d0 = d;
+d0 = d; % keep the directional derivative at the starting point
 Ax0 = Ax;    
     
 % Get parameters.

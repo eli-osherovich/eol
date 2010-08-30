@@ -59,7 +59,7 @@ end
 [done, exitFlag, exitMsg] = testTermCriteria(...
     0, x, grad, funcVal, ...
     Inf, gradNorm, Inf,...
-    [], maxIter, tolX, tolGrad, tolFun);
+    [], maxIter, tolX, tolGrad, tolFun, complexVarsFlag);
 
 % Set output structure fileds.
 Output.initialFval = funcVal;
@@ -121,7 +121,7 @@ while ~done
     [done, exitFlag, exitMsg] = testTermCriteria(...
         iter, x, grad, funcVal, ...
         stepNorm, gradNorm, abs(funcVal - funcValOld),...
-        LSoutput, maxIter, tolX, tolGrad, tolFun);
+        LSoutput, maxIter, tolX, tolGrad, tolFun, complexVarsFlag);
    
 end
 % Display exit message (if requested).
@@ -154,14 +154,14 @@ end
 function [done, exitFlag, exitMsg] = testTermCriteria(...
     iter, x, grad, funcVal, ...
     stepNorm, gradNorm, funcValDiff,...
-    LSoutput, maxIter, tolX, tolGrad, tolFun)
+    LSoutput, maxIter, tolX, tolGrad, tolFun, complexVarsFlag)
 
 done = false;
 exitFlag = 0;
 exitMsg = '';
 
 % Check if x has valid values.
-if ~isValid(x)
+if ~isValid(x, complexVarsFlag)
     done = true;
     exitMsg = 'Invalid X values';
     exitFlag = -1;
@@ -169,7 +169,7 @@ if ~isValid(x)
 end
 
 % Check if grad has valid values.
-if ~isValid(grad)
+if ~isValid(grad, complexVarsFlag)
     done = true;
     exitMsg = 'Invalid Grad values';
     exitFlag = -2;
