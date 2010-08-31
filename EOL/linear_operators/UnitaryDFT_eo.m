@@ -59,9 +59,15 @@ classdef UnitaryDFT_eo < LinearOp_eo
     
     methods
         function self = UnitaryDFT_eo(rangeSize, imageSize)
-            
-            self = self@LinearOp_eo(rangeSize, imageSize);
-            
+            if nargin == 2
+                linopArgs = {rangeSize, imageSize};
+            elseif nargin == 1
+                linopArgs = {rangeSize};
+            else
+                error('EOL:UnitaryDFT:WrongArgNum', ...
+                    'You must provide either one or two arguments');
+            end
+            self = self@LinearOp_eo(linopArgs{:});
             % We currently allow only zero padding (image size is greater
             % than or equal to the range size). No "chopping" is allowed.
             if any(self.ImageSize < self.RangeSize)
@@ -84,25 +90,20 @@ classdef UnitaryDFT_eo < LinearOp_eo
             end
         end
         
-        function Ax = mtimes(self, x)
-            
-        % Check whether we are in the direct or adjoint mode.
-            if self.AdjointFlag
-                % Adjoint mode.
-                x_tmp  = reshape(x, self.ImageSize);
-                Ax = ifftn(x_tmp);
-                if ~isempty(self.ValidIdx)
-                    Ax = Ax(self.ValidIdx{:});
-                end
-                Ax = Ax * self.NormConstAdj;
-            else
-                % Direct mode.
-                x_tmp = reshape(x, self.RangeSize);
-                Ax = fftn(x_tmp, self.ImageSize);
-                Ax = Ax*self.NormConstFwd;
+        function Ax = ApplyAdjoint(self, x)
+            x_tmp  = reshape(x, self.ImageSize);
+            Ax = ifftn(x_tmp);
+            if ~isempty(self.ValidIdx)
+                Ax = Ax(self.ValidIdx{:});
             end
-            
-            % By the design assumptions, we shall return a column vector.
+            Ax = Ax * self.NormConstAdj;
+            Ax = Ax(:);
+        end
+        
+        function Ax = ApplyForward(self, x)
+            x_tmp = reshape(x, self.RangeSize);
+            Ax = fftn(x_tmp, self.ImageSize);
+            Ax = Ax*self.NormConstFwd;
             Ax = Ax(:);
         end
     end

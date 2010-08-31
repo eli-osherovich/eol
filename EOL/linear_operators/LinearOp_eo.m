@@ -32,11 +32,22 @@ classdef LinearOp_eo
         % defining this function we allow correct treatment of the '
         % (apostrophe) operator.
         function self = ctranspose(self)
-            self.AdjointFlag = ~self.AdjointFlag;
+            [self.AdjointFlag] = deal(~[self.AdjointFlag]);
+            self = self.';
+        end
+        
+        function Ax = mtimes(self, x)
+            if self.AdjointFlag 
+                Ax = ApplyAdjoint(self, x);
+            else
+                Ax = ApplyForward(self, x);
+            end
         end
     end
     
+    
     methods (Abstract)
-        Ax = mtimes(self, x)
+        Ax = ApplyAdjoint(self, x)
+        Ax = ApplyForward(self, x)
     end
 end
