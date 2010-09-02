@@ -38,7 +38,7 @@ classdef UnitaryDFT_eo < LinearOp_eo
 % Implementation details:
 % -----------------------
 % The shape (size) of the range and input are mandatory. These values
-% (vectors) are stored in the properties RANGESIZE and IMAGESIZE. The
+% (vectors) are stored in the properties RANGESHAPE and IMAGESHAPE. The
 % mode of operations is governed by the state of ADJOINTFLAG: false =>
 % forward operator, true => adjoint operator. To allow MATLAB's notation
 % A*x the MTIMES subroutine is overloaded. To allow the convenient
@@ -46,23 +46,36 @@ classdef UnitaryDFT_eo < LinearOp_eo
     
     
     
-% Copyright 2008-2010 Eli Osherovich.
+% Copyright 2010 Eli Osherovich.
     
     
     
     
     properties (Access = private)
+        RangeShape
+        ImageShape
         NormConstFwd;
         NormConstAdj;
         ValidIdx = cell(0);
     end
     
     methods
-        function self = UnitaryDFT_eo(rangeSize, imageSize)
+        function self = UnitaryDFT_eo(rangeShape, imageShape)
             if nargin == 2
-                linopArgs = {rangeSize, imageSize};
+                validateattributes(rangeShape, {'numeric'}, {'integer', ...
+                    'positive', 'vector'});
+                validateattributes(imageShape, {'numeric'}, {'integer', ...
+                    'positive', 'vector'});
+                
+                linopArgs = {prod(rangeShape), prod(imageShape)};
+                
             elseif nargin == 1
-                linopArgs = {rangeSize};
+                
+                validateattributes(rangeShape, {'numeric'}, {'integer', ...
+                    'positive', 'scalar'});
+               
+                linopArgs = {prod(rangeShape)};
+                imageShape = rangeShape;
             else
                 error('EOL:UnitaryDFT:WrongArgNum', ...
                     'You must provide either one or two arguments');
@@ -70,28 +83,43 @@ classdef UnitaryDFT_eo < LinearOp_eo
             self = self@LinearOp_eo(linopArgs{:});
             % We currently allow only zero padding (image size is greater
             % than or equal to the range size). No "chopping" is allowed.
-            if any(self.ImageSize < self.RangeSize)
+            if any(imageShape < rangeShape)
                 error('EOL:UnitaryDFT:WrongSize', ...
                       'Range size is greater than the image size');
             end
-            
+            self.RangeShape = rangeShape;
+            self.ImageShape = imageShape;
+                        
             % Set normalization constant. By multiplying by this constant
             % we make the operator unitary.
-            self.NormConstAdj = sqrt(prod(self.ImageSize));
+            self.NormConstAdj = sqrt(prod(imageShape));
             self.NormConstFwd = 1/self.NormConstAdj;
             
             
             % Set valid index.
-            if any(self.ImageSize ~= self.RangeSize)
-                self.ValidIdx = cell(1, length(self.RangeSize));
+            if any(imageShape ~= rangeShape)
+                self.ValidIdx = cell(1, length(rangeShape));
                 for k = 1:length(self.ValidIdx)
-                    self.ValidIdx{k} = 1:self.RangeSize(k);
+                    self.ValidIdx{k} = 1:rangeShape(k);
                 end
             end
         end
+
+        % Forward operator: pad matrix with zeros and apply forward Fourier
+        % transform. Note that zero padding is done implicitly by Matlab's
+        % fft function (which is, of course, stolen fftw).
+        function Ax = ApplyForward(self, x)
+            x_tmp = reshape(x, self.RangeShape);
+            Ax = fftn(x_tmp, self.ImageShape);
+            Ax = Ax*self.NormConstFwd;
+            Ax = Ax(:);
+        end
         
+        % Adjoint operator: apply inverse Fourier transform (which is
+        % equivalent to the adjoint) and clip the valid area which is, in
+        % general, smaller due to zero padding.
         function Ax = ApplyAdjoint(self, x)
-            x_tmp  = reshape(x, self.ImageSize);
+            x_tmp  = reshape(x, self.ImageShape);
             Ax = ifftn(x_tmp);
             if ~isempty(self.ValidIdx)
                 Ax = Ax(self.ValidIdx{:});
@@ -100,11 +128,6 @@ classdef UnitaryDFT_eo < LinearOp_eo
             Ax = Ax(:);
         end
         
-        function Ax = ApplyForward(self, x)
-            x_tmp = reshape(x, self.RangeSize);
-            Ax = fftn(x_tmp, self.ImageSize);
-            Ax = Ax*self.NormConstFwd;
-            Ax = Ax(:);
-        end
+        
     end
 end

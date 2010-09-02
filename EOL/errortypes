@@ -1,0 +1,18 @@
+
+cat:dimensionError
+DimensionsMismatch
+HessianNotSupported
+horzcat:dimensionMismatch
+IllegalArgument
+InvalidInputs
+MultipleOptions
+NonConvexParabola
+NonNumericInput
+ rounding errors prevent further progress. there may not be a
+UnknownError
+vertcat:dimensionMismatch
+wrongArg
+WrongArgNum
+WrongDirection
+WrongInput
+WrongSize

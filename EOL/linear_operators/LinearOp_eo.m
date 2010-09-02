@@ -1,111 +1,96 @@
 classdef LinearOp_eo
     
-    properties (Access = protected)
-        RangeSize
+    
+    % Copyright 2010 Eli Osherovich.
+    
+    properties 
+        RangeNumelOriginal
         RangeNumel
         
-        ImageSize
+        ImageNumelOriginal
         ImageNumel
         
         AdjointFlag = false
+        MinusFlag = false
     end
-    
-    methods        
-        function self = LinearOp_eo(rangeSize, imageSize)
-            if nargin < 1
-                error('EOL:LinearOp:WrongInput', ['Not enough input ' ...
-                    'arguments']);
+  
+    methods
+        function self = LinearOp_eo(rangeNumel, imageNumel)
+            if nargin == 1
+                % If imageNumel is not specified assume it is equal to
+                % rangeNumel.
+                imageNumel = rangeNumel;
             end
+                
+            validateattributes(rangeNumel, {'numeric'}, {'integer', ...
+                'positive', 'scalar'});
+            validateattributes(imageNumel, {'numeric'}, {'integer', ...
+                'positive', 'scalar'});
             
-            % Inputs must be integer positive vectors.
-            validateattributes(rangeSize, {'numeric'}, {'integer', ...
-                'positive', 'vector'});
-            self.RangeSize = rangeSize;
+            self.RangeNumelOriginal = rangeNumel;
+            self.RangeNumel = rangeNumel;
             
-            % Set image shape (size).
-            if nargin > 1
-                self.ImageSize = imageSize;
-            else
-                self.ImageSize = rangeSize;
-            end
-            
-            self.RangeNumel = prod(self.RangeSize);
-            self.ImageNumel = prod(self.ImageSize);
+            self.ImageNumelOriginal = imageNumel;
+            self.ImageNumel = imageNumel;
         end
-        
+
         % Toggle the conjugate transpose flag on a call to ctranspose. By
         % defining this function we allow correct treatment of the '
-        % (apostrophe) operator. The operator works correctly on an array
-        % of LinearOp_eo(s).
+        % (apostrophe) operator.
         function self = ctranspose(self)
-            [self.AdjointFlag] = deal(~[self.AdjointFlag]);
-            self = self.';
+            self.AdjointFlag = ~self.AdjointFlag;
+            [self.RangeNumel, self.ImageNumel] = deal(self.ImageNumel, self.RangeNumel);
+        end
+        
+        function self = conj(self)
+            self.AdjointFlag = ~self.AdjointFlag;
+            [self.RangeNumel, self.ImageNumel] = deal(self.ImageNumel, self.RangeNumel);
+        end
+        
+        function self = uminus(self)
+            self.MinusFlag = ~ self.MinusFlag;
+        end
+        
+        function newObj = horzcat(varargin)
+            newObj = LinearOpMatrix_eo(varargin);
+        end
+        
+        function newObj = vertcat(varargin)
+            newObj = LinearOpMatrix_eo(varargin');
         end
         
         function Ax = mtimes(self, x)
-            if isscalar(self)
-                if self.AdjointFlag
-                    Ax = ApplyAdjoint(self, x);
-                else
-                    Ax = ApplyForward(self, x);
-                end
-            elseif ndims(self) == 2
-                Ax = [];
-                for i = 1:size(self, 1)
-                    Ax_row = 0;
-                    for j = 1:size(self, 2)
-                        if self(i,j).AdjointFlag
-                            Ax_row = Ax_row +  ApplyAdjoint(self(i,j), x);
-                        else
-                            Ax_row = Ax_row + ApplyForward(self(i,j), x);
-                        end
-                    end
-                    Ax = [Ax; Ax_row];
-                end
+            % If x is a linear opertor, the result is a linear operator
+            % chain (which is, of course, a linear operator too).
+            if isa(x, 'LinearOp_eo')
+                Ax = LinearOpChain_eo({self, x});
+                return;
+            end
+            
+            % Check that the X's size is consistent with the rangeNumel of
+            % the operator.
+            if self.RangeNumel ~= numel(x)
+                error('EOL:LinearOp:mtimes:wrongDimension', ...
+                    'Matrix dimensions must agree.');
+            end
+            
+            % Apply operator in an appropriate mode, either forward or
+            % adjoint.
+            if self.AdjointFlag
+                Ax = ApplyAdjoint(self, x);
             else
-                error('Oooops');
+                Ax = ApplyForward(self, x);
             end
-        end
-   
-        
-        % To concatenate linear operators horizonally we must check that the
-        % image dimesnions of all arguments is the same. There are two
-        % possibilities: first, to check the shape (size) of the image;
-        % second, to check only that the number of elements in the image is
-        % the same. Here we use the second approach.
-        function self = horzcat(varargin)
-            self = builtin('horzcat', varargin{:});
-            % Make sure that the image is compatible.
-            if ~all(self(1).ImageNumel == [self.ImageNumel])
-                error('EOL:LinearOp:horzcat:dimensionMismatch', ...
-                    'CAT arguments dimensions are not consistent');
+            
+            if self.MinusFlag
+                Ax = -Ax;
             end
         end
         
-        % Similarly to the horizontal concatenation, the vertical
-        % concatenation must check that the range is compatible.
-        function self = vertcat(varargin)
-            self = builtin('vertcat', varargin{:});
-            % Make sure that the range is compatible.
-            if ~all(self(1).RangeNumel == [self.RangeNumel])
-                error('EOL:LinearOp:vertcat:dimensionMismatch', ...
-                    'CAT arguments dimensions are not consistent');
-            end
+        function newObj = plus(self, x)
+            newObj = LinearOpPlus_eo({self, x});
         end
         
-        % General cat function: do not allow creation of ND arrays. 
-        % It must be a matrix.
-        function self = cat(varargin)
-            switch varargin{1}
-                case 1
-                    self = vertcat(varargin{2:end});
-                case 2
-                    self = horzcat(varargin{2:end});
-                otherwise
-                    error('EOL:LinearOp:cat:dimensionError', ...
-                        'CAT can create matrices only. Higher dimensional arraya are not allowed');
-            end
-        end
     end
     
     methods (Abstract)
