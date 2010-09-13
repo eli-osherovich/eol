@@ -72,7 +72,7 @@ classdef UnitaryDFT_eo < LinearOp_eo
             elseif nargin == 1
                 
                 validateattributes(rangeShape, {'numeric'}, {'integer', ...
-                    'positive', 'scalar'});
+                    'positive', 'vector'});
                
                 linopArgs = {prod(rangeShape)};
                 imageShape = rangeShape;
