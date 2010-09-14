@@ -3,25 +3,39 @@ function Ax = mtimes(self, x)
     % chain (which is, of course, a linear operator too).
     if isa(x, 'LinearOp_eo')
         Ax = LinearOpChain_eo({self, x});
-        return;
-    end
+    elseif isnumeric(x)
+        Ax = applyOp(self, x);
+    elseif iscell(x)
+        % pre-allcote space
+        Ax = cell(size(x));
     
-    % Check that the X's size is consistent with the rangeNumel of
-    % the operator.
-    if self.RangeNumel ~= numel(x)
-        error('EOL:LinearOp:mtimes:wrongDimension', ...
-            'Matrix dimensions must agree.');
+        for i = 1:numel(x)
+            % Skip if empty
+            if isempty(x{i})
+                continue;
+            end
+            Ax{i} = applyOp(self, x);
+        end
     end
-    
-    % Apply operator in an appropriate mode, either forward or
-    % adjoint.
-    if self.AdjointFlag
-        Ax = ApplyAdjoint(self, x);
-    else
-        Ax = ApplyForward(self, x);
-    end
-    
-    if self.MinusFlag
-        Ax = -Ax;
+
+    function Ax = applyOp(op, x)
+        % Check that the X's size is consistent with the rangeNumel of
+        % the operator.
+        if op.RangeNumel ~= numel(x)
+            error('EOL:LinearOp:mtimes:wrongDimension', ...
+                'Matrix dimensions must agree.');
+        end
+        
+        % Apply operator in an appropriate mode, either forward or
+        % adjoint.
+        if op.AdjointFlag
+            Ax = ApplyAdjoint(op, x);
+        else
+            Ax = ApplyForward(op, x);
+        end
+        
+        if op.MinusFlag
+            Ax = -Ax;
+        end
     end
 end

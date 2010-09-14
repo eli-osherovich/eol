@@ -49,7 +49,7 @@ switch nargout
             val = val + weight * val_tmp;
             
             if ~ProjFlag || isempty(Av{i})
-                grad = grad + weight * calculate_linop('adjoint', fAxStruct, grad_tmp, i);
+                grad = grad + weight * applyLinOpAdj(fAxStruct, grad_tmp, i);
             else
                 grad = grad + weight * grad_tmp;
             end
@@ -74,12 +74,12 @@ switch nargout
             val = val + weight * val_tmp;
             
             if ~ProjFlag || isempty(Av{i})
-                grad = grad + weight * calculate_linop('adjoint', fAxStruct, grad_tmp, i);
+                grad = grad + weight * applyLinOpAdj(fAxStruct, grad_tmp, i);
                 % hessian is calculated by formula A'*H*A = A'*H*A*I
                 % it may be extremely slow.
                 hess = hess + weight * (...
-                    calculate_linop('adjoint', fAxStruct, hessAv_tmp, i) * ...
-                    calculate_linop('forward', fAxStruct, eye(numel(Ax{i})), i));
+                    applyLinOpAdj(fAxStruct, hessAv_tmp, i) * ...
+                    applyLinOpFwd(fAxStruct, eye(numel(Ax{i})), i));
             else
                 grad = grad + weight * grad_tmp;
                 hess = hess + weight * hessAv_tmp;

@@ -1,4 +1,4 @@
-classdef LinearOpPlus_eo < LinearOp_eo
+classdef LinearOpSum_eo < LinearOp_eo
     properties
         % It should be a list of linear operators, but MATLAB does not
         % allow creation of an array of different linear operators. Hence,
@@ -8,10 +8,10 @@ classdef LinearOpPlus_eo < LinearOp_eo
     
     
     methods
-        function self = LinearOpPlus_eo(linopCell)
+        function self = LinearOpSum_eo(linopCell)
             % Make sure that all arguments are linops.
             if any(cellfun (@(c) ~isa(c, 'LinearOp_eo'), linopCell))
-                error('EOL:LinearOpMatrix:wrongArgType', ...
+                error('EOL:LinearOpSum:wrongArgType', ...
                     'Inputs must be of type LinearOp_eo');
             end
             
@@ -22,12 +22,12 @@ classdef LinearOpPlus_eo < LinearOp_eo
             for i = 2:n
                 if linopCell{i}.RangeNumel ~= linopCell{i-1}.RangeNumel ||...
                         linopCell{i}.ImageNumel ~= linopCell{i-1}.ImageNumel
-                    error('EOL:LinearOpPlus:dimensionMismatch', ...
+                    error('EOL:LinearOpSum:dimensionMismatch', ...
                         'PLUS arguments dimensions are not consistent.');
                 end
             end
             
-            % Create a LinOpPlus
+            % Create a LinOpSum
             self = self@LinearOp_eo(linopCell{1}.RangeNumel, linopCell{1}.ImageNumel);
             self.LinOpListCell = linopCell(:);
         end

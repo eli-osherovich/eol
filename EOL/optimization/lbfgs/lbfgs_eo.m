@@ -40,7 +40,7 @@ prevSteps = cell(1, nPrev);
 empty = cell(size(FuncAxStruct));
 
 % Calculate Ax for the initial point.
-Ax = calculate_linop('forward', FuncAxStruct, x);
+Ax = applyLinOpFwd(FuncAxStruct, x);
 
 % Calculate initial function value and gradient.
 [funcVal, grad] = calc_EDx(x, Ax, FuncAxStruct, FuncXStruct, empty, [], false, complexVarsFlag);
@@ -88,7 +88,7 @@ while ~done
     end
     
     % Calculate d's linear transform (used by line search).
-    Ad = calculate_linop('forward', FuncAxStruct, d);
+    Ad = applyLinOpFwd(FuncAxStruct, d);
     
     % Save current point data.
     gradOld = grad;

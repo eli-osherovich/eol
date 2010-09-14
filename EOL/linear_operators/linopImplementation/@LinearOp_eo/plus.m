@@ -1,3 +1,3 @@
 function newObj = plus(self, x)
-    newObj = LinearOpPlus_eo({self, x});
+    newObj = LinearOpSum_eo({self, x});
 end
