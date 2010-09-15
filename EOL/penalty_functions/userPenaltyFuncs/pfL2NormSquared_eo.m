@@ -1,3 +1,5 @@
+classdef pfDistanceL2Squared < PenaltyFunc_eo
+
 function [val, grad, hessV, hessVfunc] = nonnegative_penalty_quadratic(x,V)
 % NONEGATIVE PENALTY QUADRATIC - compute penalty for negative values 
 % val = 1/2 * x^2  for x<0 and x belongs to params.support

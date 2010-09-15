@@ -2,7 +2,7 @@ function [val, grad, hessV] = subsref(self, restArgs)
 
 % Make sure that the function was called with the regular parentheses: ()
 
-if ~strcmp(restArgs.type, '()')
+if ~strcmp(restArgs(1).type, '()')
     val = builtin('subsref', self, restArgs);
     return;
 end
@@ -16,7 +16,7 @@ switch nargout
     
     case {0, 1}
         % Return the value at x.
-        val = doCalculations(self, x);
+        val = self.doCalculations(x);
         val = val * self.multFactor;
         
     case 2

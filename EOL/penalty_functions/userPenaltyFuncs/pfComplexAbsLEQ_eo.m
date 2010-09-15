@@ -6,13 +6,13 @@ classdef pfComplexAbsLEQ_eo < PenaltyFunc_eo
     % Copyright 2008-2010 Eli Osherovich.
 
     
-    properties
+    properties (Access = private)
         r
         w = 1;
     end
     
     methods
-        function self = pfComlexAbsLEQ_eo(r, w)
+        function self = pfComplexAbsLEQ_eo(r, w)
             % Chech that R is nonnegative.
             validateattributes(r, {'numeric'}, {'real', 'nonnegative'});
             self.r = r(:);
@@ -23,14 +23,14 @@ classdef pfComplexAbsLEQ_eo < PenaltyFunc_eo
                 self.w = w(:);
             end
         end
-        
+ 
         function [val, grad, hessMultVecorFunc] = doCalculations(self, z)
             
             % Calculate z's modulus.
             zModulus = abs(z);
            
 
-            difference = zModulus - self.R;
+            difference = zModulus - self.r;
 
             % Find violations.
             violIdx = difference > 0;

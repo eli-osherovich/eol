@@ -1,6 +1,6 @@
 classdef PenaltyFuncSum_eo < PenaltyFunc_eo
     
-    properties
+    properties (Access=private)
         PenaltyFuncListCell
     end
     
@@ -15,7 +15,7 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
             % Create a PenaltyFuncSum object
             self.PenaltyFuncListCell = varargin(:);
         end
-        
+   
         function [val, grad, hessMultVecorFunc] = doCalculations(self, x)
             nFunc = numel(self.PenaltyFuncListCell);
             
@@ -24,15 +24,25 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
             allHessMultFunc = cell(1, nFunc);
             allMultFactors = zeros(1, nFunc);
             
+            % Since MATLAB does not call an overloaded SUBSREF inside
+            % object's methods (and one of the entries in
+            % PenaltyFuncListCell and be a PenaltySum_eo) we shall use an
+            % explicit call. 
+            
+            % Prepare data for SUBSREF call
+            subs.type = '()';
+            subs.subs = {x};
+            
+            
             for i = 1:nFunc
                 valCur = 0;
                 gradCur = 0;
-                                
+                             
                 switch nargout
                     case {0, 1}
-                        valCur = self.PenaltyFuncListCell{i}(x);
+                        valCur = subsref(self.PenaltyFuncListCell{i}, subs);
                     case 2
-                        [valCur, gradCur] = self.PenaltyFuncListCell{i}(x);
+                        [valCur, gradCur] = subsref(self.PenaltyFuncListCell{i}, subs);
                     case 3
                         % Returning three outputs is a bit problematic.
                         % By the design, penalty fuctions should return (as

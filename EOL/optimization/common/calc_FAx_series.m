@@ -30,7 +30,7 @@ switch nargout
        
             weight = find_weight(fAxStruct(i));
 
-            val = val + weight * calc_Fx_series(fAxStruct(i).fxStruct, Ax{i}, [], ProjFlag, ComplexVarsFlag);
+            val = val + weight * calc_Fx_series(fAxStruct(i).function, Ax{i}, [], ProjFlag, ComplexVarsFlag);
         end
 
 
@@ -44,7 +44,7 @@ switch nargout
             % this is probably not what you expect!
             % we calculate dot product between the gradient and v
             % if v was given (non-empty)
-            [val_tmp, grad_tmp] = calc_Fx_series(fAxStruct(i).fxStruct, Ax{i}, Av{i}, ProjFlag, ComplexVarsFlag);
+            [val_tmp, grad_tmp] = calc_Fx_series(fAxStruct(i).function, Ax{i}, Av{i}, ProjFlag, ComplexVarsFlag);
         
             val = val + weight * val_tmp;
             
@@ -69,7 +69,7 @@ switch nargout
             
             weight = find_weight(fAxStruct(i));
             
-            [val_tmp, grad_tmp, hessAv_tmp] = calc_Fx_series(fAxStruct(i).fxStruct, Ax{i}, Av{i}, ProjFlag, ComplexVarsFlag);
+            [val_tmp, grad_tmp, hessAv_tmp] = calc_Fx_series(fAxStruct(i).function, Ax{i}, Av{i}, ProjFlag, ComplexVarsFlag);
             
             val = val + weight * val_tmp;
             

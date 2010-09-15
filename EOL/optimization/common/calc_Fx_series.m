@@ -24,34 +24,10 @@ end
 
 switch nargout
     case 1
-        val = 0;
-        for i = 1:length(fxStruct)
-            
-            weight = find_weight(fxStruct(i));
-            
-            if isfield(fxStruct(i), 'func_args')
-                val = val + weight * fxStruct(i).function(x, [], fxStruct(i).func_args{:});
-            else
-                val = val + weight * fxStruct(i).function(x, []);
-            end
-        end
-        
-    case 2
-        val = 0;
-        grad = zeros(size(x));
-        
-        for i = 1:length(fxStruct)
-                        
-            weight = find_weight(fxStruct(i));
+        val = fxStruct(x);
 
-            if isfield(fxStruct(i), 'func_args')
-                [val_tmp, grad_tmp] = fxStruct(i).function(x, [], fxStruct(i).func_args{:});
-            else
-                [val_tmp, grad_tmp] = fxStruct(i).function(x, []);
-            end
-            val = val + weight * val_tmp;
-            grad = grad + weight * grad_tmp;
-        end
+    case 2
+       [val, grad] = fxStruct(x);
         
         % shall we calculate grad'*V ?
         if ProjFlag && ~isempty(V)
@@ -79,28 +55,7 @@ switch nargout
 	            
         
     case 3
-       val = 0; 
-       grad = zeros(numel(x), 1);
-       hessV = cell(size(V));
-       [hessV{:}] = deal(zeros(numel(x),1));
-        
-        for i = 1:length(fxStruct)
-                                    
-            weight = find_weight(fxStruct(i));
-
-            if isfield(fxStruct(i), 'func_args')
-                [val_tmp, grad_tmp, hessV_tmp] = fxStruct(i).function(x, V, fxStruct(i).func_args{:});
-            else
-                [val_tmp, grad_tmp, hessV_tmp] = fxStruct(i).function(x,V);
-            end
-            val = val + weight * val_tmp;
-            grad = grad + weight * grad_tmp;
-            for k = 1:numel(hessV)
-                if ~isempty(hessV_tmp{k})
-                    hessV{k} = hessV{k} + weight * hessV_tmp{k};
-                end
-            end
-        end
+       [val, grad, hessV] = fxStruct(x, V);
         
         if ProjFlag && ~isempty(V)
             non_empty_idx = find(~cellfun('isempty',V));

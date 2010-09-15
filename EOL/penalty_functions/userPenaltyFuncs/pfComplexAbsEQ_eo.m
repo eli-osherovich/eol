@@ -8,7 +8,7 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
     
     
     
-    properties
+    properties (Access=private)
         r
         w = 1;
     end
@@ -26,7 +26,7 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
                 self.w = w(:);
             end
         end
-        
+    
         function [val, grad, hessMultVecorFunc] = doCalculations(self, z)
             % Calculate z's modulus and phase
             % zModulus = abs(z);
