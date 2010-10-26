@@ -125,7 +125,7 @@ for i = 1:maxIter
     
     if (exactHessianFlag)
         % hessian may become non-symmetric due to numerical errors
-        hess_alpha = real((hess_alpha + hess_alpha')/2);
+        % hess_alpha = real((hess_alpha + hess_alpha')/2);
     
         % eigen decomposition of the Hessian
         [evect,eval] = eig(hess_alpha);
