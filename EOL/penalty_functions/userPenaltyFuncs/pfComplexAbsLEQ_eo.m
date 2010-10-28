@@ -25,12 +25,17 @@ classdef pfComplexAbsLEQ_eo < PenaltyFunc_eo
         end
  
         function [val, grad, hessMultVecorFunc] = doCalculations(self, z)
+            % Introduce local variables instead of object's members.
+            % Current MATLAB version does not use JIT for calculations
+            % involving object's members.
+            R = self.r;
+            W = self.w;
             
             % Calculate z's modulus.
             zModulus = abs(z);
            
 
-            difference = zModulus - self.r;
+            difference = zModulus - R;
 
             % Find violations.
             violIdx = difference > 0;
@@ -38,15 +43,15 @@ classdef pfComplexAbsLEQ_eo < PenaltyFunc_eo
             % Violating values.
             zv = z(violIdx);
             zvModulus = zModulus(violIdx);
-            rv = self.r(violIdx);
+            rv = R(violIdx);
 
-            val = sum(self.w.*difference(violIdx).^2);
+            val = sum(W.*difference(violIdx).^2);
 
             if nargout > 1, % gradient requested
                 grad = zeros(size(z));
                           
                 zvNormalized = exp(1i*angle(zv)); % slow?
-                grad(violIdx) = 2*self.w .* (zv -  rv.*zvNormalized);
+                grad(violIdx) = 2*W .* (zv -  rv.*zvNormalized);
                 
                 if nargout > 2, % Hessian mult. function is requested
                     hessMultVecorFunc = @hessMult;
@@ -57,7 +62,7 @@ classdef pfComplexAbsLEQ_eo < PenaltyFunc_eo
                 rzvMod_ratio = rv./(zvModulus+eps);
                 hessV = zeros(numel(v), 1);
                 vv = v(violIdx);
-                hessV(violIdx) = self.w .*( ...
+                hessV(violIdx) = W .*( ...
                     (2 - rzvMod_ratio) .*vv + ...
                     (rzvMod_ratio.*zvNormalized.^2) .* conj(vv));
             end

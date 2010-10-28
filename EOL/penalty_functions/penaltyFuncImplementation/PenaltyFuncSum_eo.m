@@ -12,8 +12,33 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
                     'Inputs must be of type PenaltyFunc_eo');
             end
             
-            % Create a PenaltyFuncSum object
-            self.PenaltyFuncListCell = varargin(:);
+            % Create a PenaltyFuncSum object.
+            % The following line would be perfectly OK, however, we want to
+            % avoid it for reasons described below.
+            %
+            % self.PenaltyFuncListCell = varargin(:);
+            %
+            % The reasons to avoid that simple solutions are twofold:
+            % Fist, writing an expression like pfSum = pf1 + pf2 + pf3 +... +pf10
+            % will create 9 PenaltyFuncSum(s). Hence, we one will call
+            % pfSum(x) it will result in 9 *nested* calls.
+            % The second reason to avoid PenaltyFuncSum in the list is
+            % because MATLAB does not call the overloaded SUBSREF function
+            % inside object's methods and therefore, we shall call SUBSREF
+            % explicitly instead of using a more elegant way like
+            %
+            % res = PenaltyFuncListCell{1}(x);
+            %
+            
+            % Find PenaltyFuncSum(s) in the input
+            pfSumIdx = cellfun (@(c) isa(c, 'PenaltyFuncSum_eo'), varargin);
+            
+            % Expand PenaltyFuncSum(s) and use normal PenaltyFunc(s) as usual
+            pfSumExpand = cellfun(@(c) c.PenaltyFuncListCell, varargin(pfSumIdx), 'UniformOutput', false);
+            self.PenaltyFuncListCell = [pfSumExpand{:} varargin(~pfSumIdx)];
+            
+            
+            
         end
    
         function [val, grad, hessMultVecorFunc] = doCalculations(self, x)
@@ -26,14 +51,14 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
             allHessMultFunc = cell(1, nFunc);
             allMultFactors = zeros(1, nFunc);
             
-            % Since MATLAB does not call an overloaded SUBSREF inside
-            % object's methods (and one of the entries in
-            % PenaltyFuncListCell and be a PenaltySum_eo) we shall use an
-            % explicit call. 
-            
-            % Prepare data for SUBSREF call
-            subs.type = '()';
-            subs.subs = {x};
+            %             % Since MATLAB does not call an overloaded SUBSREF inside
+            %             % object's methods (and one of the entries in
+            %             % PenaltyFuncListCell and be a PenaltySum_eo) we shall use an
+            %             % explicit call.
+            %
+            %             % Prepare data for SUBSREF call
+            %             subs.type = '()';
+            %             subs.subs = {x};
             
             valCur = 0;
             gradCur = 0;
@@ -42,9 +67,9 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
                                           
                 switch nargout
                     case {0, 1}
-                        valCur = subsref(pfCurr, subs);
+                        valCur = pfCurr(x);
                     case 2
-                        [valCur, gradCur] = subsref(pfCurr, subs);
+                        [valCur, gradCur] = pfCurr(x);
                     case 3
                         % Returning three outputs is a bit problematic.
                         % By the design, penalty fuctions should return (as

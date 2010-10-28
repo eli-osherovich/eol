@@ -20,26 +20,20 @@ switch nargout
     case {0, 1}
         % Return the value at x.
         val = doCalculations(self, x);
-        val = val * mFactor;
-        
+         
     case 2
         % Return the value and gradient.
         [val, grad] = doCalculations(self, x);
-        val = val * mFactor;
-        grad = grad * mFactor;
-        
+         
     case 3
         v = restArgs.subs{2};
         % Return the value, gradient and Hessian times vector.
         [val, grad, hessMultVectorFunc] = doCalculations(self, x);
-        val = val * mFactor;
-        grad = grad * mFactor;
-        
+         
         if isnumeric(v) % one vector
             assert(isvector(v));
             hessV = hessMultVectorFunc(v);
-            hessV = hessV * mFactor;
-            
+             
         elseif iscell(v) % multiple vectors
             % preallocate space
             hessV = cell(size(v));
@@ -47,8 +41,7 @@ switch nargout
                 if ~isempty(v{i})
                     assert(isvector(v{i}));
                     hessV{i} = hessMultVectorFunc(v{i});
-                    hessV{i} = hessV{i} * mFactor;
-                end
+                 end
             end
         else
             error('EOL:PenaltyFunc:WrongArgType', ...
@@ -58,4 +51,17 @@ switch nargout
     otherwise
         error('EOL:PenaltyFunc:WrongOutNum', ...
             'The function retrurns up to 3 outputs');
+end
+
+% Apply mFactor (if not unity).
+if mFactor ~= 1
+    val = val * mFactor;
+    grad = grad * mFactor;
+    if isnumeric(hessV)
+        hessV = hessV * mFactor;
+    else % hessV is a cell
+        for i = 1:numel(hessV)
+            hessV{i} = hessV{i} * mFactor;
+        end
+    end
 end

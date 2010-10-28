@@ -24,7 +24,7 @@ N = numel(x0);
 % transformed by the lin. operators A_i
 
 % previous gradients
-PrevGrads = cell(1,nPrevGrads);
+PrevGrads = cell(1, nPrevGrads);
 APrevGrads = cell(1, length(FuncAxStruct));
 
 % previous steps
@@ -90,11 +90,11 @@ for i = 0:maxIter
     gradNorm = norm(grad(:));
     
     %% use restart similar to the Polak–Ribiere method
-    %beta = grad(:)'*(grad(:)-old_grad(:));
-    %if beta <= 0
-    %    restart('Negative beta');
-    %end
-    %old_grad = grad;
+    %     beta = grad(:)'*(grad(:)-old_grad(:));
+    %     if beta <= eps
+    %         restart('Negative beta');
+    %     end
+    %     old_grad = grad;
     
     % print statistics
 	if ~isfield(options, 'display') || options.display
@@ -153,19 +153,20 @@ for i = 0:maxIter
     
     stepLength = norm(x_newton(:) - x(:));
 
-    if stepLength/gradNorm < 0.01
-           % restart('short step'); 
-    elseif nPrevSteps > 0
+    %     if stepLength/gradNorm < 0.01
+    %            restart('short step');
+    %     elseif nPrevSteps > 0
+    if nPrevSteps > 0
         % update previous directions if we use them
         new_dir = x_newton - x;
         % normalize new direction
         new_dir = new_dir/(stepLength + eps);
         
         
-        PrevSteps = circshift(PrevSteps, -1);
+        PrevSteps(1:end-1) = PrevSteps(2:end);
         PrevSteps{end} = new_dir;
         for k = 1:length(FuncAxStruct)
-            APrevSteps{k} = circshift(APrevSteps{k}, -1);
+            APrevSteps{k}(1:end-1) = APrevSteps{k}(2:end);
             APrevSteps{k}{end} = applyLinOpFwd(FuncAxStruct, PrevSteps{end}, k);
         end
     end

@@ -28,18 +28,24 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
         end
     
         function [val, grad, hessMultVecorFunc] = doCalculations(self, z)
+            % Introduce local variables instead of object's members.
+            % Current MATLAB version does not use JIT for calculations
+            % involving object's members.
+            R = self.r;
+            W = self.w;
+            
             % Calculate z's modulus and phase
             % zModulus = abs(z);
             % zPhase = angle(z);
             [zPhase, zModulus] = cmplx2polC_eo(z);
             
             % Calculate function value.
-            val = sum(self.w .* (zModulus - self.r).^2);
+            val = sum(W .* (zModulus - R).^2);
             
             if nargout > 1, % gradient requested
                 %zNormalized = complex(cos(zPhase), sin(zPhase));
                 zNormalized = pol2unitcmplxC_eo(zPhase);
-                grad = 2*self.w .* (z -  self.r .* zNormalized);
+                grad = 2*W .* (z - R .* zNormalized);
                 
                 if nargout > 2 % Hessian mult. function is requested
                     hessMultVecorFunc = @hessMult;
@@ -47,8 +53,8 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
             end
             
             function hessV = hessMult(v)
-                rzModRatio = self.r./(zModulus+eps);
-                hessV = self.w .* (...
+                rzModRatio = R./(zModulus+eps);
+                hessV = W .* (...
                     (2 - rzModRatio) .* v + ...
                     (rzModRatio .* zNormalized.^2) .* conj(v));
             end

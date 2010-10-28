@@ -45,7 +45,7 @@ classdef pfProjGEQL2Squared_eo < PenaltyFunc_eo
             W = self.w;
            
             % Violations: Projection of X on DIR < threshold
-            difference = real(conj(Dir).*x) - Thr;
+            difference = real(Dir).*real(x) + imag(Dir).*imag(x) - Thr;
             violIdx = difference < 0;
             
             % Parameters' values at violating indices. 
