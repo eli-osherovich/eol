@@ -6,7 +6,7 @@ classdef PenaltyFunc_eo
     
     
     
-    properties (Access = private)
+    properties (Access = protected)
         multFactor = 1
         minusFlag = false
     end

@@ -40,32 +40,33 @@ classdef pfProjGEQL2Squared_eo < PenaltyFunc_eo
         end
 
         function [val, grad, hessMultVecorFunc] = doCalculations(self, x)
+            Dir = self.dir;
+            Thr = self.threshold;
+            W = self.w;
            
-            % Projection of X on DIR.
-            xProj = real(self.dir).*real(x) + imag(self.dir).*imag(x);
-            
-            % Find violations.
-            difference = xProj - self.threshold;
+            % Violations: Projection of X on DIR < threshold
+            difference = real(conj(Dir).*x) - Thr;
             violIdx = difference < 0;
             
             % Parameters' values at violating indices. 
-            if isscalar(self.dir)
-                dirV = self.dir;
+            if isscalar(Dir)
+                dirV = Dir;
             else
-                dirV = self.dir(violIdx);
+                dirV = Dir(violIdx);
             end
-            if isscalar(self.w)
-                wV = self.w;
+            if isscalar(W)
+                wV = W;
             else
-                wV = self.w(violIdx);
+                wV = W(violIdx);
             end
             differenceV = difference(violIdx);
+            wVDiff = wV .* differenceV;
             
-            val = sum( wV .* differenceV.^2);
+            val = sum( wVDiff .* differenceV);
             
             if nargout > 1 % gradient requested
                 grad = zeros(size(x));
-                grad(violIdx) = (2 * wV) .* differenceV .* dirV;
+                grad(violIdx) = 2 * wVDiff .* dirV;
                 if nargout > 2 % Hessian mult. function requested
                     hessMultVecorFunc = @hessMult;
                 end

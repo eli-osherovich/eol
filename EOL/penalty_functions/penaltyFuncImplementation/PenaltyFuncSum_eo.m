@@ -17,7 +17,9 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
         end
    
         function [val, grad, hessMultVecorFunc] = doCalculations(self, x)
-            nFunc = numel(self.PenaltyFuncListCell);
+            pfList = self.PenaltyFuncListCell;
+            
+            nFunc = numel(pfList);
             
             val = 0;
             grad = 0;
@@ -33,16 +35,16 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
             subs.type = '()';
             subs.subs = {x};
             
-            
+            valCur = 0;
+            gradCur = 0;
             for i = 1:nFunc
-                valCur = 0;
-                gradCur = 0;
-                             
+                pfCurr = pfList{i};
+                                          
                 switch nargout
                     case {0, 1}
-                        valCur = subsref(self.PenaltyFuncListCell{i}, subs);
+                        valCur = subsref(pfCurr, subs);
                     case 2
-                        [valCur, gradCur] = subsref(self.PenaltyFuncListCell{i}, subs);
+                        [valCur, gradCur] = subsref(pfCurr, subs);
                     case 3
                         % Returning three outputs is a bit problematic.
                         % By the design, penalty fuctions should return (as
@@ -51,10 +53,10 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
                         % knows nothing about the MULTFACTOR. Hence, we
                         % must take care of it.
                         
-                        [valCur, gradCur, allHessMultFunc{i}] = doCalculations(self.PenaltyFuncListCell{i}, x);
-                        valCur = valCur * self.PenaltyFuncListCell{i}.multFactor;
-                        gradCur = gradCur * self.PenaltyFuncListCell{i}.multFactor;
-                        allMultFactors(i) = self.PenaltyFuncListCell{i}.multFactor;
+                        [valCur, gradCur, allHessMultFunc{i}] = doCalculations(pfCurr, x);
+                        valCur = valCur * pfCurr.multFactor;
+                        gradCur = gradCur * pfCurr.multFactor;
+                        allMultFactors(i) = pfCurr.multFactor;
                 end
                 
                 val = val + valCur;
