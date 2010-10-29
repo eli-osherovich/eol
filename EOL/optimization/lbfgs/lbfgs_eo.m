@@ -1,5 +1,5 @@
 function [x, funcVal, Output] = lbfgs_eo(x0, FuncAxStruct, ...
-    FuncXStruct, Options)
+    funcX, Options)
 % LBFGS - perform unconstrained minimization with the L-BFGS algorithm.
 
 
@@ -36,14 +36,11 @@ end
 prevGrads = cell(1, nPrev);
 prevSteps = cell(1, nPrev);
 
-% Generate empty cell array of proper size (used by some functions).
-empty = cell(size(FuncAxStruct));
-
 % Calculate Ax for the initial point.
 Ax = applyLinOpFwd(FuncAxStruct, x);
 
 % Calculate initial function value and gradient.
-[funcVal, grad] = calc_EDx(x, Ax, FuncAxStruct, FuncXStruct, empty, [], false, complexVarsFlag);
+[funcVal, grad] = calcObjFunc(x, Ax, FuncAxStruct, funcX, complexVarsFlag);
 gradNorm = norm(grad);
 funcCount = 1;
 
@@ -96,7 +93,7 @@ while ~done
     
     % Peform line search.
     [t, x, funcVal, grad, Ax, LSoutput] =  wolfeLS_eo(t0, x, funcVal, grad, ...
-        d, Ax, Ad, FuncAxStruct, FuncXStruct, Options);
+        d, Ax, Ad, FuncAxStruct, funcX, Options);
     funcCount = funcCount + LSoutput.funcCount;
     
     

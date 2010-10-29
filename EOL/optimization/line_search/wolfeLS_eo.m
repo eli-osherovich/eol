@@ -1,4 +1,4 @@
-function [t, x, f, g, Ax, Output] = wolfeLS_eo(t, x, f, g, dir, Ax, Adir, FuncAxStruct, FuncXStruct, Options)
+function [t, x, f, g, Ax, Output] = wolfeLS_eo(t, x, f, g, dir, Ax, Adir, FuncAxStruct, funcX, Options)
 % Line-search routine with strong Wolfe's conditions.
     
     
@@ -28,12 +28,6 @@ Ax0 = Ax;
     xtrapMax, ...       % Step-length extrapolation min. factor (20)
     complexVarsFlag...  % Indicator whether the variables X are complex (false)
 ] = wolfeLSGetOptions_eo(x0, Options);
-
-
-
-
-% Dummy empty cell array (used by calc_EDx).
-empty = cell(size(FuncAxStruct));
 
 
 
@@ -95,7 +89,7 @@ while ~done
     for k = 1:length(FuncAxStruct)
             Ax{k} = Ax0{k} + t * Adir{k};
     end
-    [f, g] = calc_EDx(x, Ax, FuncAxStruct, FuncXStruct, empty, [], false, complexVarsFlag);
+    [f, g] = calcObjFunc(x, Ax, FuncAxStruct, funcX, complexVarsFlag);
     
     d = real(g'*dir);
     
