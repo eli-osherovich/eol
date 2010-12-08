@@ -13,6 +13,12 @@ x = restArgs.subs{1};
 % By the convention x is assumed to be a column vector.
 validateattributes(x, {'numeric'}, {'column'});
 
+% Pre-define empty grad and hessV. These variables may not be created in
+% each call, but later we use them to apply multFactor
+grad = [];
+hessV = cell(0);
+
+
 mFactor = self.multFactor;
 
 switch nargout
@@ -27,7 +33,7 @@ switch nargout
          
     case 3
         v = restArgs.subs{2};
-        % Return the value, gradient and Hessian times vector.
+        % Return the value, gradient and Hessian-vector product.
         [val, grad, hessMultVectorFunc] = doCalculations(self, x);
          
         if isnumeric(v) % one vector
