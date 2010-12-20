@@ -9,14 +9,14 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
     
     
     properties (Access=private)
-        r
-        w = 1;
+        r;      % given absolute value
+        w = 1;  % weights
     end
     
     methods
         function self = pfComplexAbsEQ_eo(r, w)
             
-            % Chech that R is nonnegative.
+            % Check that R is nonnegative.
             validateattributes(r, {'numeric'}, {'real', 'nonnegative'});
             self.r = r(:);
             

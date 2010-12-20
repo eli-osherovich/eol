@@ -16,6 +16,10 @@ function Ax = mtimes(self, x)
             end
             Ax{i} = applyOp(self, x);
         end
+    else
+        error('EOL:PenaltyFunc:WrongArgType', ...
+            ['x must be a linear operator, numeric vector, or cell array.',...
+            '\nInstead got %s.'], class(x));
     end
 
     function Ax = applyOp(op, x)
