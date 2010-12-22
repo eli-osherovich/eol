@@ -50,6 +50,8 @@ if t <=0 || fdf < 0 || gdf < 0 || tolX < 0 || tolDD < 0 || ...
     else
         Output.exitFlag = -2;
         Output.exitMsg = 'Invalid input parameters';
+        Output.funcCount = 0;
+        Output.nIterations = 0;
         return;
     end
 end
