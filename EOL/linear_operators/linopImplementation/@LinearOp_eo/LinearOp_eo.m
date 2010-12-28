@@ -5,10 +5,10 @@ classdef LinearOp_eo
     
     properties 
         RangeNumelOriginal
-        RangeNumel
+        RangeNumelCurrent
         
         ImageNumelOriginal
-        ImageNumel
+        ImageNumelCurrent
         
         AdjointFlag = false
         MinusFlag = false
@@ -28,10 +28,10 @@ classdef LinearOp_eo
                 'positive', 'scalar'});
             
             self.RangeNumelOriginal = rangeNumel;
-            self.RangeNumel = rangeNumel;
+            self.RangeNumelCurrent = rangeNumel;
             
             self.ImageNumelOriginal = imageNumel;
-            self.ImageNumel = imageNumel;
+            self.ImageNumelCurrent = imageNumel;
         end
     end
     

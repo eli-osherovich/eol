@@ -1,4 +1,4 @@
-function [val, grad, hess] = calc_FAx_series(fAxStruct, Ax, Av, ProjFlag, ComplexVarsFlag)
+function [val, grad, hess] = calc_FAx_series(fAxStruct, Ax, Av, ProjFlag, complexVarsFlag)
 
 
 % (c) Copyright 2008-2010 Eli Osherovich.
@@ -19,7 +19,7 @@ end
 
 % assume real variables by default.
 if nargin < 5
-    ComplexVarsFlag = false;
+    complexVarsFlag = false;
 end
 
 
@@ -30,7 +30,7 @@ switch nargout
        
             weight = find_weight(fAxStruct(i));
 
-            val = val + weight * calc_Fx_series(fAxStruct(i).function, Ax{i}, [], ProjFlag, ComplexVarsFlag);
+            val = val + weight * calc_Fx_series(fAxStruct(i).function, Ax{i}, [], ProjFlag, complexVarsFlag);
         end
 
 
@@ -44,7 +44,7 @@ switch nargout
             % this is probably not what you expect!
             % we calculate dot product between the gradient and v
             % if v was given (non-empty)
-            [val_tmp, grad_tmp] = calc_Fx_series(fAxStruct(i).function, Ax{i}, Av{i}, ProjFlag, ComplexVarsFlag);
+            [val_tmp, grad_tmp] = calc_Fx_series(fAxStruct(i).function, Ax{i}, Av{i}, ProjFlag, complexVarsFlag);
         
             val = val + weight * val_tmp;
             
@@ -56,7 +56,7 @@ switch nargout
         end
         
         % make sure the gradient is real if opt. variables are real
-        if ~ComplexVarsFlag
+        if ~complexVarsFlag
             grad = real(grad);
         end
         
@@ -69,7 +69,7 @@ switch nargout
             
             weight = find_weight(fAxStruct(i));
             
-            [val_tmp, grad_tmp, hessAv_tmp] = calc_Fx_series(fAxStruct(i).function, Ax{i}, Av{i}, ProjFlag, ComplexVarsFlag);
+            [val_tmp, grad_tmp, hessAv_tmp] = calc_Fx_series(fAxStruct(i).function, Ax{i}, Av{i}, ProjFlag, complexVarsFlag);
             
             val = val + weight * val_tmp;
             
@@ -87,7 +87,7 @@ switch nargout
         end
         
         % make sure the gradient and Hessian are real if opt. variables are real
-        if ~ComplexVarsFlag
+        if ~complexVarsFlag
             grad = real(grad);
             hess = real(hess);
         end

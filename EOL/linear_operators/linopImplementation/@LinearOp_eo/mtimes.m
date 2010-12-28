@@ -1,4 +1,11 @@
 function Ax = mtimes(self, x)
+    
+    
+    
+    % Copyright 2010 Eli Osherovich.
+    
+    
+    
     % If x is a linear opertor, the result is a linear operator
     % chain (which is, of course, a linear operator too).
     if isa(x, 'LinearOp_eo')
@@ -8,7 +15,7 @@ function Ax = mtimes(self, x)
     elseif iscell(x)
         % pre-allcote space
         Ax = cell(size(x));
-    
+        
         for i = 1:numel(x)
             % Skip if empty
             if isempty(x{i})
@@ -21,11 +28,11 @@ function Ax = mtimes(self, x)
             ['x must be a linear operator, numeric vector, or cell array.',...
             '\nInstead got %s.'], class(x));
     end
-
+    
     function Ax = applyOp(op, x)
-        % Check that the X's size is consistent with the rangeNumel of
-        % the operator.
-        if op.RangeNumel ~= numel(x)
+        % Check that the X's size is consistent with the rangeNumelCurrent
+        % of the operator.
+        if op.RangeNumelCurrent ~= numel(x)
             error('EOL:LinearOp:mtimes:wrongDimension', ...
                 'Matrix dimensions must agree.');
         end

@@ -54,10 +54,10 @@ for i = 1:numel(allSlibs)
     
         
     % Calculate numerical Jacobian.
-    N_Jac = (calcNumJacobian_eo(@objFuncSOE, x, 'precise'))';
+    N_Jac = (calcNumJacobian_eo(x, @objFuncSOE, 'precise'))';
     
     % Calculate numerical gradient.
-    N_Grad = (calcNumJacobian_eo(@objFuncSOS, x, 'precise'))';
+    N_Grad = (calcNumJacobian_eo(x, @objFuncSOS, 'precise'))';
     
     % Jacobian max errors.
     jacAbsErr = max(abs(fj(:) - N_Jac(:)));

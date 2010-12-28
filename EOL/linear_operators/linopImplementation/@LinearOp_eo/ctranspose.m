@@ -1,4 +1,12 @@
 function self = ctranspose(self)
-    self.AdjointFlag = ~self.AdjointFlag;
-    [self.RangeNumel, self.ImageNumel] = deal(self.ImageNumel, self.RangeNumel);
+
+
+
+% Copyright 2010 Eli Osherovich.
+
+
+
+self.AdjointFlag = ~self.AdjointFlag;
+[self.RangeNumelCurrent, self.ImageNumelCurrent] = ...
+    deal(self.ImageNumelCurrent, self.RangeNumelCurrent);
 end

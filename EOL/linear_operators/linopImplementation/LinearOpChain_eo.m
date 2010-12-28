@@ -20,14 +20,14 @@ classdef LinearOpChain_eo < LinearOp_eo
             
             % Make sure the linops' deminstions are compatible.
             for i = 2:n
-                if linopCell{i}.ImageNumel ~= linopCell{i-1}.RangeNumel
+                if linopCell{i}.ImageNumelCurrent ~= linopCell{i-1}.RangeNumelCurrent
                     error('EOL:LinearOpChain:dimensionMismatch', ...
                         'CAT arguments dimensions are not consistent.');
                 end
             end
             
             % Create a LinOpChain
-            self = self@LinearOp_eo(linopCell{end}.RangeNumel, linopCell{1}.ImageNumel);
+            self = self@LinearOp_eo(linopCell{end}.RangeNumelCurrent, linopCell{1}.ImageNumelCurrent);
             self.LinOpListCell = linopCell(:);
         end
         

@@ -1,6 +1,6 @@
-function NHess = calcNumHessian_eo(func, x, mode)
+function NHess = calcNumHessian_eo(x, func, mode)
 % CALCNUMHESSIAN - calculate Hessian numerically.
-% NHESS = CALCNUMHESSIAN(FUNC, X, MODE) - calculate numerical
+% NHESS = CALCNUMHESSIAN(X, FUNC, MODE) - calculate numerical
 % approximation to the Hessian of a function FUNC at point X.
 % 
 % FUNC must be a function (handle) that accepts a single input X
@@ -32,11 +32,11 @@ end
 
 % Calculate partial derivatives df/dx_i
 for i = 1:N
-    NHess(:,i) = calcNumJacobian_eo(@(x) funcWrapper(func, x), x, mode);
+    NHess(:,i) = calcNumJacobian_eo(x, @(x) funcWrapper(func, x), mode);
 end
 
 
-function grad = funcWrapper(func, x)
+function grad = funcWrapper(x, func)
 % FUNCWRAPPER - a function wrapper that makes GRAD to be the output
 % of FUNC.
 [~, grad] = func(x);

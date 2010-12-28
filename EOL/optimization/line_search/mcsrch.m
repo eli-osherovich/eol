@@ -11,7 +11,7 @@ function [t, x, f, g, output] =  mcsrch(t, x0, f0, g0, ...
     minStp, ...         % Minimal step (1e-20)
     maxStp, ...         % Maximal step (1e+20 or based on minFval and
     xtrapF, ...         % Step-length extrapolation factor (10)
-    ComplexVarsFlag...  % Indicator whether the variables X are complex (false)
+    complexVarsFlag...  % Indicator whether the variables X are complex (false)
     ] = wolfeLSGetOptions_eo(x0, options);
 
 

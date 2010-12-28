@@ -1,4 +1,5 @@
-function [x, allF, finalG, allGnorm, allX] = newton_eo(x0, Ax0, func_Ax_Struct, func_x_Struct, AD, D, options)
+function [x, allF, finalG, allGnorm, allX] = newton_eo(x0, Ax0, ...
+        FuncAxStruct, funcX, AD, D, options)
 
 % maximal number of iterations
 maxIter = options.maxNewtonIter;
@@ -29,7 +30,7 @@ debug = options.debug;
 N = numel(x0);
 
 
-Adir = cell(1, length(func_Ax_Struct));
+Adir = cell(1, length(FuncAxStruct));
 
 % allocate space for output requested
 if nargout > 1,
@@ -70,7 +71,7 @@ for i = 1:maxIter
         if (debug)
             fprintf('Re-calculating true Hessian\n');
         end
-        [val, grad_alpha, hess_alpha] = calc_EDx(x, Ax, func_Ax_Struct, func_x_Struct, AD, D, true);
+        [val, grad_alpha, hess_alpha] = calc_EDx(x, Ax, FuncAxStruct, funcX, AD, D, true);
         
         if (i == 1), % remember intial gradient
             grad_alpha0norm = norm(grad_alpha(:));
@@ -79,7 +80,7 @@ for i = 1:maxIter
     else
         exactHessianFlag = false;
         old_grad_alpha = grad_alpha;
-        [val, grad_alpha] = calc_EDx(x, Ax, func_Ax_Struct, func_x_Struct, AD, D, true);
+        [val, grad_alpha] = calc_EDx(x, Ax, FuncAxStruct, funcX, AD, D, true);
         y = grad_alpha(:) - old_grad_alpha(:);
         
         sy = s'*y;
@@ -171,7 +172,7 @@ for i = 1:maxIter
     
     
     %dir = reshape(dir, size(x0));
-    for n = 1:length(func_Ax_Struct)
+    for n = 1:length(FuncAxStruct)
         non_empty_idx = find(~cellfun('isempty',AD{n}));
         adir_tmp = 0;
         for k = 1:numel(dir_alpha)
@@ -181,8 +182,8 @@ for i = 1:maxIter
     end
     
     % calulate step length
-    t = Armijo_backtracking(x, Ax, val, grad_alpha(:)'*dir_alpha, func_Ax_Struct, func_x_Struct, Adir, dir, options);
-    %t = Wolfe_cubic(x, Ax, val, grad_alpha(:)'*dir_alpha, func_Ax_Struct, func_x_Struct, Adir, dir, options);
+    t = Armijo_backtracking(x, Ax, val, grad_alpha(:)'*dir_alpha, FuncAxStruct, funcX, Adir, dir, options);
+    %t = Wolfe_cubic(x, Ax, val, grad_alpha(:)'*dir_alpha, FuncAxStruct, funcX, Adir, dir, options);
 
     % terminate if step size is too small 
     if t*norm(dir(:)) < stepSizeTerm;
@@ -195,7 +196,7 @@ for i = 1:maxIter
         
     % perform step
     x_new = x + t*dir;
-    for k = 1:length(func_Ax_Struct)
+    for k = 1:length(FuncAxStruct)
         Ax{k} = Ax{k} + t*Adir{k};
     end
 end
@@ -211,21 +212,21 @@ if ~earlyExit,    %update last step
             x = x_new;
         case 2
             x = x_new;
-            allF(i+1) = calc_EDx(x, Ax, func_Ax_Struct, func_x_Struct, [], []);
+            allF(i+1) = calc_EDx(x, Ax, FuncAxStruct, funcX, [], []);
         case 3
             x = x_new;
-            [val, grad_alpha] = calc_EDx(x, Ax, func_Ax_Struct, func_x_Struct, AD, D, true);
+            [val, grad_alpha] = calc_EDx(x, Ax, FuncAxStruct, funcX, AD, D, true);
             allF(i+1) = val;
             finalG = grad_alpha;
         case 4
             x = x_new;
-            [val, grad_alpha] = calc_EDx(x, Ax, func_Ax_Struct, func_x_Struct, AD, D, true);
+            [val, grad_alpha] = calc_EDx(x, Ax, FuncAxStruct, funcX, AD, D, true);
             allF(i+1) = val;
             finalG = grad_alpha;
             allGnorm(i) = norm(grad_alpha(:));
         case 5
             x = x_new;
-            [val, grad_alpha] = calc_EDx(x, Ax, func_Ax_Struct, func_x_Struct, AD, D, true);
+            [val, grad_alpha] = calc_EDx(x, Ax, FuncAxStruct, funcX, AD, D, true);
             allF(i+1) = val;
             finalG = grad_alpha;
             allGnorm(i+1) = norm(grad_alpha(:));

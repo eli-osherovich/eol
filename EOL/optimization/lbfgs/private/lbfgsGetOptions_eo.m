@@ -1,5 +1,5 @@
 function [...
-    x0, maxIter, ComplexVarsFlag, nPrev, useMex,...
+    x0, maxIter, complexVarsFlag, nPrev, useMex,...
     tolX, tolFun, tolGrad, display] = lbfgsGetOptions_eo(x0, options)
 
 % convert x to a column vector and verify validity
@@ -19,13 +19,13 @@ end
 
 % shall we assume complex variables?
 % by default use the complexity of x0
-ComplexVarsFlag = getOpt_eo(options, 'ComplexVarsFlag', ~isreal(x0));
+complexVarsFlag = getOpt_eo(options, 'complexVarsFlag', ~isreal(x0));
 
-% check whether the type of x matches ComplexVarsFlag
-if ComplexVarsFlag && isreal(x0)
-    % ComplexVarsFlag is set explicitly but x0 is real
-    warning('EOL:LBFGS:RealXwithComplexVarsFlag',...
-        'ComplexVarsFlag is set while X0 is real. Converting to complex.');
+% check whether the type of x matches complexVarsFlag
+if complexVarsFlag && isreal(x0)
+    % complexVarsFlag is set explicitly but x0 is real
+    warning('EOL:LBFGS:RealXwithcomplexVarsFlag',...
+        'complexVarsFlag is set while X0 is real. Converting to complex.');
     x0 = complex(x0, zeros(size(x0)));
 end
 

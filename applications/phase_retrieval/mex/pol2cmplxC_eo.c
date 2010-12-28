@@ -10,8 +10,7 @@
 
 /*
   To compile run
-  mex -O pol2cmplxC_eo.c -L	\
-  /opt/intel/Compiler/11.1/072/ipp/em64t/sharedlib/ -lippsem64t
+  mex -O pol2cmplxC_eo.c -I/opt/intel/ipp/include -lipps
 */
 
 

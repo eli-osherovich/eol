@@ -29,7 +29,7 @@ classdef LinearOpMatrix_eo < LinearOp_eo
             % Run over rows
             allImageNumelTmp = zeros(1, m);
             for i = 1:m
-                uniqueVals = unique(cellfun(@(c) c.ImageNumel, linopCell(i,:)));
+                uniqueVals = unique(cellfun(@(c) c.ImageNumelCurrent, linopCell(i,:)));
                 if ~all(uniqueVals == uniqueVals(1))
                     error('EOL:LinearOpMatrix:dimensionMismatch', ...
                         'CAT arguments dimensions are not consistent.')
@@ -40,7 +40,7 @@ classdef LinearOpMatrix_eo < LinearOp_eo
             % Run over columns
             allRangeNumelTmp = zeros(1, n);
             for j = 1:size(linopCell, 2)
-                uniqueVals = unique(cellfun(@(c) c.RangeNumel, linopCell(:,j)));
+                uniqueVals = unique(cellfun(@(c) c.RangeNumelCurrent, linopCell(:,j)));
                 if ~all(uniqueVals == uniqueVals(1))
                     error('EOL:LinearOpMatrix:dimensionMismatch', ...
                         'CAT arguments dimensions are not consistent.')

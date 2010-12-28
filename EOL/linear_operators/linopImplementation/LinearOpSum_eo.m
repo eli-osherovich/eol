@@ -20,15 +20,15 @@ classdef LinearOpSum_eo < LinearOp_eo
             
             % Make sure the linops' deminstions are compatible.
             for i = 2:n
-                if linopCell{i}.RangeNumel ~= linopCell{i-1}.RangeNumel ||...
-                        linopCell{i}.ImageNumel ~= linopCell{i-1}.ImageNumel
+                if linopCell{i}.RangeNumelCurrent ~= linopCell{i-1}.RangeNumelCurrent ||...
+                        linopCell{i}.ImageNumelCurrent ~= linopCell{i-1}.ImageNumelCurrent
                     error('EOL:LinearOpSum:dimensionMismatch', ...
                         'PLUS arguments dimensions are not consistent.');
                 end
             end
             
             % Create a LinOpSum
-            self = self@LinearOp_eo(linopCell{1}.RangeNumel, linopCell{1}.ImageNumel);
+            self = self@LinearOp_eo(linopCell{1}.RangeNumelCurrent, linopCell{1}.ImageNumelCurrent);
             self.LinOpListCell = linopCell(:);
         end
         

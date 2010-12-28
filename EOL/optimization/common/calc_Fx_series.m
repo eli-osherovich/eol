@@ -1,4 +1,4 @@
-function [val, gradV, VhessV] = calc_Fx_series(fxStruct, x, V, ProjFlag, ComplexVarsFlag)
+function [val, gradV, VhessV] = calc_Fx_series(fxStruct, x, V, ProjFlag, complexVarsFlag)
 
 
 % (c) Copyright 2008-2010 Eli Osherovich.
@@ -19,7 +19,7 @@ end
 
 % assume real variables by default.
 if nargin < 5
-    ComplexVarsFlag = false;
+    complexVarsFlag = false;
 end
 
 switch nargout
@@ -45,7 +45,7 @@ switch nargout
                 error('Wrong V: it must be either a vector or cell');
             end
             % make sure the gradient is real if opt. variables are real
-            if ~ComplexVarsFlag
+            if ~complexVarsFlag
                 gradV = real(gradV);
             end
         else
@@ -70,7 +70,7 @@ switch nargout
                 end
             end
             % make sure the gradient and Hessian are real if opt. variables are real
-            if ~ComplexVarsFlag
+            if ~complexVarsFlag
                 gradV = real(gradV);
                 VhessV = real(VhessV);
             end

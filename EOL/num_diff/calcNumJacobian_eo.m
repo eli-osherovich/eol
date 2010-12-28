@@ -1,7 +1,7 @@
-function Jt = calcNumJacobian_eo(func, x, mode)
+function Jt = calcNumJacobian_eo(x, func, mode)
 % CALCNUMJACOBIAN - calculate Jacobian numerically.
 %
-% Jt =  CALCNUMJACOBIAN(FUNC, X) calculate Jacobian matrix numerically by the
+% Jt =  CALCNUMJACOBIAN(X, FUNC) calculate Jacobian matrix numerically by the
 % central difference approximation. 
 %
 % The output JT is the conjugate transpose of the Jacobian matrix, so that
@@ -54,17 +54,17 @@ for h = [hRe hIm]
     switch mode
         case {'forward'}
             % Forward difference
-            Jt = Jt + onesideDerivative(func, x, h);
+            Jt = Jt + onesideDerivative(x, func, h);
         
         case {'backward'}
             % Backward difference
-            Jt = Jt + onesideDerivative(func, x, -h);
+            Jt = Jt + onesideDerivative(x, func, -h);
         
         case 'central'
-            Jt = Jt + centralDerivative(func, x, h);
+            Jt = Jt + centralDerivative(x, func, h);
             
         case 'precise'
-            Jt = Jt + extrapDerivative(func, x, h);
+            Jt = Jt + extrapDerivative(x, func, h);
             
             
         otherwise
@@ -73,7 +73,7 @@ for h = [hRe hIm]
     end
 end
 
-function Jt = onesideDerivative(func, x, h)
+function Jt = onesideDerivative(x, func, h)
 % Number of variables.
 N = numel(x);
 
@@ -96,7 +96,7 @@ for i = 1:N
     Jt(i,:) = (func(xTmp) - fx)/h(i);
 end
 
-function Jt = centralDerivative(func, x, h)
+function Jt = centralDerivative(x, func, h)
 % Number of variables.
 N = numel(x);
 
@@ -121,7 +121,7 @@ for i = 2:N
     Jt(i,:) = (func(xF) - func(xB))/2/h(i);
 end
 
-function Jt = extrapDerivative(func, x, h)
+function Jt = extrapDerivative(x, func, h)
 % Calculate derivative approximation using central difference and
 % Richardson's extrapolation.
 %
@@ -154,7 +154,7 @@ Ctab = cell(nSteps-1);
 
 % The first approximation is computed outside the look just to give us the
 % size of the Jacobian.
-Jtab{1,1} = centralDerivative(func, x, h);
+Jtab{1,1} = centralDerivative(x, func, h);
 h = h/2;
 
 Jt = Jtab{1,1};
@@ -173,7 +173,7 @@ for i = 2:nSteps
     cGoodIdx = true(Jsize);
         
     % Calculate the Jacobian corresponding to the current step.
-    Jtab{i,1} = centralDerivative(func, x, h);
+    Jtab{i,1} = centralDerivative(x, func, h);
     
     % Calculate (the rest of) the current row.
     % In the central difference approximation the power series contains all
