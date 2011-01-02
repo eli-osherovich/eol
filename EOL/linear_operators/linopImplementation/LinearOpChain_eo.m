@@ -18,7 +18,7 @@ classdef LinearOpChain_eo < LinearOp_eo
             % Total number of linops in the chain
             n = numel(linopCell);
             
-            % Make sure the linops' deminstions are compatible.
+            % Make sure the linops' dimensions are compatible.
             for i = 2:n
                 if linopCell{i}.ImageNumelCurrent ~= linopCell{i-1}.RangeNumelCurrent
                     error('EOL:LinearOpChain:dimensionMismatch', ...
