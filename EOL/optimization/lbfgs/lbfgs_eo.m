@@ -37,7 +37,7 @@ prevGrads = cell(1, nPrev);
 prevSteps = cell(1, nPrev);
 
 % Calculate Ax for the initial point.
-Ax = applyLinOpFwd(FuncAxStruct, x);
+Ax = applyMapping(FuncAxStruct, x);
 
 % Calculate initial function value and gradient.
 [funcVal, grad] = calcObjFunc(x, Ax, FuncAxStruct, funcX, complexVarsFlag);
@@ -85,7 +85,8 @@ while ~done
     end
     
     % Calculate d's linear transform (used by line search).
-    Ad = applyLinOpFwd(FuncAxStruct, d);
+    %Ad = applyMapping(FuncAxStruct, d);
+    Ad = cell(size(Ax));
     
     % Save current point data.
     gradOld = grad;

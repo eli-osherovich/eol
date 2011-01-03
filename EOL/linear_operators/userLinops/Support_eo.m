@@ -57,7 +57,7 @@ classdef Support_eo < LinearOp_eo
         % Adjoint operator: distribute x's entries into the locations
         % defined by non-zeros of the mask.
         function Ax = ApplyAdjoint(self, x)
-            Ax = zeros(self.RangeNumelOriginal, 1);
+            Ax = zeros(numel(self.SupportMask), 1);
             Ax(self.SupportMask) = x;
         end
     end

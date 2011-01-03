@@ -39,7 +39,7 @@ function [val, grad] = calcObjFunc(x, Ax, FuncAxStruct, funcX, complexVarsFlag)
                 
                 val = val + val_tmp;
                 
-                grad_tmp = FuncAxStruct(i).linop' * grad_tmp;
+                grad_tmp = MultConjJacobian(FuncAxStruct(i).mapping,  grad_tmp);
                 % make sure the gradient is real if opt. variables are real
                 if ~complexVarsFlag
                     grad_tmp = real(grad_tmp);

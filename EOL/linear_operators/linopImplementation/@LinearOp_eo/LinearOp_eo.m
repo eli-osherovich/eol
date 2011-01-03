@@ -1,17 +1,14 @@
-classdef LinearOp_eo
+classdef LinearOp_eo < Mapping_eo
     
     
     % Copyright 2010 Eli Osherovich.
     
     properties 
-        RangeNumelOriginal
-        RangeNumelCurrent
-        
-        ImageNumelOriginal
-        ImageNumelCurrent
+        % The *Original variables keep the range and image dimensionality
+        % at the creation time. Applying conjugate (adjoint) operations
+        % interchange the above dimensionalities.
         
         AdjointFlag = false
-        MinusFlag = false
     end
   
     methods
@@ -22,17 +19,35 @@ classdef LinearOp_eo
                 imageNumel = rangeNumel;
             end
                 
-            validateattributes(rangeNumel, {'numeric'}, {'integer', ...
-                'positive', 'scalar'});
-            validateattributes(imageNumel, {'numeric'}, {'integer', ...
-                'positive', 'scalar'});
-            
-            self.RangeNumelOriginal = rangeNumel;
-            self.RangeNumelCurrent = rangeNumel;
-            
-            self.ImageNumelOriginal = imageNumel;
-            self.ImageNumelCurrent = imageNumel;
+            self = self@Mapping_eo(rangeNumel, imageNumel);
         end
+    end
+    
+    methods 
+        function Ax = ApplyMapping(self, x)
+            if self.AdjointFlag
+                Ax = ApplyAdjoint(self, x);
+            else
+                Ax = ApplyForward(self, x);
+            end
+        end
+        
+        function Jx = MultJacobian(self, x)
+            if self.AdjointFlag
+                Jx = ApplyAdjoint(self, x);
+            else
+                Jx = ApplyForward(self, x);
+            end
+        end
+        
+        function Jcx = MultConjJacobian(self, x)
+            if self.AdjointFlag
+                Jcx = ApplyForward(self, x);
+            else
+                Jcx = ApplyAdjoint(self, x);
+            end
+        end
+        
     end
     
     methods (Abstract)

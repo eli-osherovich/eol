@@ -9,7 +9,7 @@ function [absErr, relErr] = testGradient_eo(x, FuncAxStruct, ...
 
 
 % Calculate analytical gradient at the given point x.
-Ax = applyOpFwd(FuncAxStruct, x);
+Ax = applyMapping(FuncAxStruct, x);
 [~, AnalGrad] = calcObjFunc(x, Ax, FuncAxStruct, funcX, complexVarsFlag);
 
 
@@ -39,5 +39,5 @@ else
 end
 
 function val = funcWrapper(x, FuncAxStruct, funcX, complexVarsFlag)
-Ax =  applyOpFwd(FuncAxStruct, x);
+Ax =  applyMapping(FuncAxStruct, x);
 val = calcObjFunc(x, Ax, FuncAxStruct, funcX, complexVarsFlag);
