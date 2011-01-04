@@ -88,9 +88,10 @@ while ~done
     
     % Evaluate the function and gradient at the new point.
     x = x0 + t*dir;
-    for k = 1:length(FuncAxStruct)
-            Ax{k} = Ax0{k} + t * Adir{k};
-    end
+    %     for k = 1:length(FuncAxStruct)
+    %             Ax{k} = Ax0{k} + t * Adir{k};
+    %     end
+    Ax = applyMapping(FuncAxStruct, x);
     [f, g] = calcObjFunc(x, Ax, FuncAxStruct, funcX, complexVarsFlag);
     
     d = real(g'*dir);
