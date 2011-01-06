@@ -57,11 +57,13 @@ classdef CircularConv_eo < LinearOp_eo
         function Ax = ApplyForward(self, x)
             x_tmp = reshape(x, self.ImageShape);
             Ax = ifftn(self.KernlFourier .* fftn(x_tmp));
+            Ax = Ax(:);
         end
         
         function Ax = ApplyAdjoint(self, x)
             x_tmp = reshape(x, self.ImageShape);
             Ax = ifftn(conj(self.KernlFourier) .* fftn(x_tmp));
+            Ax = Ax(:);
         end
     end
 end

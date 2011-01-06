@@ -18,7 +18,7 @@ function Ax = mtimes(self, x)
             if isempty(x{i})
                 continue;
             end
-            Ax{i} = ApplyMapping(self, x);
+            Ax{i} = ApplyMapping(self, x{i});
         end
     else
         error('EOL:Mapping:mtimes:WrongArgType', ...
