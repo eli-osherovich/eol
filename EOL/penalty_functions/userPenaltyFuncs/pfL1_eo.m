@@ -1,5 +1,5 @@
 classdef pfL1_eo < PenaltyFunc_eo
-    % Penalize the weighted sum: sum(W.*abs(X-x0))
+    % Penalize (weighted) L1 norm of x-x0: (w.*abs(x-x0))
     
     
     % Copyright 2010 Eli Osherovich.
@@ -11,7 +11,7 @@ classdef pfL1_eo < PenaltyFunc_eo
     end
 
     methods
-        function self = pfSum_eo(x0, w)
+        function self = pfL1_eo(x0, w)
             switch nargin
                 case 0
                     % Do nothing
@@ -30,7 +30,7 @@ classdef pfL1_eo < PenaltyFunc_eo
             val = sum(self.w .* abs(x-self.x0));
             
             if nargout > 1, % gradient requested
-                grad = self.w .* sign(x);
+                grad = self.w .* sign(x - self.x0);
                 if nargout > 2, % Hessian mult. function requested
                     hessMultVecorFunc = @hessMult;
                 end
