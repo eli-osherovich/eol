@@ -35,7 +35,7 @@ classdef Mapping_eo
     
     methods (Abstract)
         Ax = ApplyMapping(self, x);
-        Jx = MultJacobian(self, x);
-        Jcx = MultConjJacobian(self, x);
+        Jx = MultJacobian(self, x, xCurrent);
+        Jcx = MultConjJacobian(self, x, xCurrent);
     end
 end

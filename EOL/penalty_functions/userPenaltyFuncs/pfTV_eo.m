@@ -34,7 +34,7 @@ classdef pfTV_eo < PenaltyFunc_eo
             if isreal(x)
                 Dx = zeros(numel(x), self.nDims);
             else
-                Dx = complex(zeros(numel(x), self.nDims), zeros(numel(x), nDims));
+                Dx = complex(zeros(numel(x), self.nDims), zeros(numel(x), self.nDims));
             end
             
             % Calculate derivatives in all directions.

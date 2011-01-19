@@ -35,11 +35,11 @@ classdef AffineOp_eo < Mapping_eo
             Ax = ApplyMapping(self.LinOp, x) + self.B;
         end
         
-        function Jx = MultJacobian(self, x)
+        function Jx = MultJacobian(self, x, ~)
             Jx = MultJacobian(self.LinOp, x);
         end
         
-        function Jcx = MultConjJacobian(self, x)
+        function Jcx = MultConjJacobian(self, x, ~)
             Jcx = MultConjJacobian(self.LinOp, x);
         end
     end

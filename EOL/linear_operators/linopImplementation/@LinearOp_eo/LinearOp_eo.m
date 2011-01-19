@@ -32,7 +32,7 @@ classdef LinearOp_eo < Mapping_eo
             end
         end
         
-        function Jx = MultJacobian(self, x)
+        function Jx = MultJacobian(self, x, ~)
             if self.AdjointFlag
                 Jx = ApplyAdjoint(self, x);
             else
@@ -40,7 +40,7 @@ classdef LinearOp_eo < Mapping_eo
             end
         end
         
-        function Jcx = MultConjJacobian(self, x)
+        function Jcx = MultConjJacobian(self, x, ~)
             if self.AdjointFlag
                 Jcx = ApplyForward(self, x);
             else

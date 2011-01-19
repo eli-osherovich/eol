@@ -48,17 +48,19 @@ classdef MappingChain_eo < Mapping_eo
             end
         end
         
-        function Jx = MultJacobian(self, x)
+        function Jx = MultJacobian(self, x, xCurrent)
             Jx = x;
             for i = numel(self.MappingListCell):-1:1
-                Jx = MultJacobian(self.MappingListCell{i}, Ax);
+                Jx = MultJacobian(self.MappingListCell{i}, ...
+                    Jx, xCurrent);
             end
         end
             
-        function Jcx = MultConjJacobian(self, x)
+        function Jcx = MultConjJacobian(self, x, xCurrent)
             Jcx = x;
             for i = 1:numel(self.MappingListCell)
-                Jcx = MultConjJacobian(self.MappingListCell{i}, Jcx);
+                Jcx = MultConjJacobian(self.MappingListCell{i}, ...
+                    Jcx, xCurrent);
             end
         end
     end
