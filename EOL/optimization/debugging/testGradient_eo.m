@@ -4,19 +4,39 @@ function [absErr, relErr] = testGradient_eo(x, FuncAxStruct, ...
 
 
 
-% Copyright 2007-2010 Eli Osherovich.
+% Copyright 2007-2011 Eli Osherovich.
 
 
+% By default, assume that x is of correct type.
+if nargin < 4
+    complexVarsFlag = ~isreal(x);
+end
+
+% Make sure that the type of x matches complexVarsFlag.
+if complexVarsFlag
+    % If complexVarsFlag is set and x is real, we simply convert it be
+    % complex.
+    if isreal(x)
+        x = complex(x);
+    end
+else
+    % If complexVarsFlag is not set, only real-valued x is accepted.
+    if ~isreal(x)
+        error('EOL:testGradient:WrongArgType', ...
+            'x is not real, while realFlag is set');
+    end
+end
+        
 
 % Calculate analytical gradient at the given point x.
 Ax = applyMapping(FuncAxStruct, x);
 [~, AnalGrad] = calcObjFunc(x, Ax, FuncAxStruct, funcX, complexVarsFlag);
 
 
-% calculate numerical gradient 
-NumGrad =  calcNumJacobian_eo(x, ...
+% Calculate numerical gradient.
+NumJacobian =  calcNumJacobian_eo(x, ...
     @(x) funcWrapper(x, FuncAxStruct, funcX, complexVarsFlag));
-
+NumGrad = NumJacobian';
 
 % Display results if no output requested (interactive mode).
 if 0 == nargout

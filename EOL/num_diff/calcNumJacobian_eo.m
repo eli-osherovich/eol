@@ -1,19 +1,16 @@
-function Jt = calcNumJacobian_eo(x, func, mode)
+function J = calcNumJacobian_eo(x, func, mode)
 % CALCNUMJACOBIAN - calculate Jacobian numerically.
 %
 % Jt =  CALCNUMJACOBIAN(X, FUNC) calculate Jacobian matrix numerically by the
 % central difference approximation. 
 %
-% The output JT is the conjugate transpose of the Jacobian matrix, so that
-% the differential is equal to dy = J'*dx. This choice is consisten with
-% the gradient, i.e., the case with a single equation.
 %
 % Assumptions:
 % -------------
 % x  must be a column vector
 
 
-% Copyright 2007-2010 Eli Osherovich.
+% Copyright 2007-2011 Eli Osherovich.
 
 
 
@@ -72,6 +69,7 @@ for h = [hRe hIm]
                 'be either forward, backward, or central'], mode);
     end
 end
+J = Jt.';
 
 function Jt = onesideDerivative(x, func, h)
 % Number of variables.

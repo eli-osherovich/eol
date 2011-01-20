@@ -1,5 +1,11 @@
 classdef MappingChain_eo < Mapping_eo
     
+    
+    
+    % Copyright 2010-2011 Eli Osherovich.
+ 
+    
+     
     properties
         % A list of mapping is kept in a cell array, since MATLAB does not
         % allow array of different (subclasses of) Mapping(s).
@@ -38,7 +44,23 @@ classdef MappingChain_eo < Mapping_eo
             % Create MappingChain.
             self = self@Mapping_eo(mappingCell{end}.RangeNumel, ...
                 mappingCell{1}.ImageNumel);
-            self.MappingListCell = mappingCell(:);
+            
+            % We could use a simple construction like the following
+            % self.MappingListCell = mappingCell(:);
+            % However, this is very inefficient: one creates many
+            % MappingChanin(s) for an expression like M1*M2*...*M10.
+            % Furthemore, evaluating such a chain will result in many
+            % *nested* calls which are not necessary.
+            tmpCell = {};
+            for i = 1:n
+                if isa(mappingCell{i}, 'MappingChain_eo')
+                    tmpCell = [tmpCell, mappingCell{i}.MappingListCell];
+                else
+                    tmpCell = [tmpCell mappingCell(i)];
+                end
+            end
+            self.MappingListCell = tmpCell;
+            
         end
         
         function Ax = ApplyMapping(self, x)
