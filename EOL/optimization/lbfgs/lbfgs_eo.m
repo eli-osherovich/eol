@@ -132,6 +132,7 @@ x = reshape(x, xOrigSize);
 
 % Set output struct fields.
 Output.finalFval = funcVal;
+Output.finalGrad = grad;
 Output.firstOrderOpt = gradNorm;
 Output.nIterations = iter;
 Output.funcCount = funcCount;

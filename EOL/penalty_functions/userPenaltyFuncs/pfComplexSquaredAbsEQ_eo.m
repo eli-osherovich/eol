@@ -1,20 +1,18 @@
-classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
-    % COMPLEX_ABS_EQ - Squared L2 norm of (|z| - R).
-    % COMPLEX_ABS_EQ computes wieghted (optional) squared L2 norm of (|z| - R).
+classdef pfComplexSquaredAbsEQ_eo < PenaltyFunc_eo
+    % COMPLEX_ABS_SQUARED_EQ - penalty function that forces squared z modulus
+    % to be equal to R, i.e., |z|^2 = R
     
     
     
-    % Copyright 2008-2010 Eli Osherovich.
+    % Copyright 2008-2011 Eli Osherovich.
     
-    
-    
-    properties (Access=private)
-        r;      % given absolute value
-        w = 1;  % weights
+    properties
+        r;           % given absolute value squared
+        w = 1;       % weights.
     end
     
     methods
-        function self = pfComplexAbsEQ_eo(r, w)
+        function self = pfComplexSquaredAbsEQ_eo(r, w)
             
             % Check that R is nonnegative.
             validateattributes(r, {'numeric'}, {'real', 'nonnegative'});
@@ -26,7 +24,7 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
                 self.w = w(:);
             end
         end
-    
+        
         function [val, grad, hessMultVectorFunc] = doCalculations(self, z)
             % Introduce local variables instead of object's members.
             % Current MATLAB version does not use JIT for calculations
@@ -34,45 +32,27 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
             R = self.r;
             W = self.w;
             
-            % Calculate z's modulus and phase
-            % zModulus = abs(z);
-            % zPhase = angle(z);
-            [zPhase, zModulus] = cmplx2polC_eo(z);
+            % Calculate z's abs value squared.
+            zAbsSquared = z.*conj(z);
+            assert(isreal(zAbsSquared));
             
             % Calculate function value.
-            val = sum(W .* (zModulus - R).^2);
+            val = sum(W .* (zAbsSquared-R).^2);
+            
             
             if nargout > 1, % gradient requested
-                %zNormalized = complex(cos(zPhase), sin(zPhase));
-                zNormalized = pol2unitcmplxC_eo(zPhase);
-                grad = 2*W .* (z - R .* zNormalized);
+                grad = 4*W .* z.*(zAbsSquared - R);
                 
-                if nargout > 2 % Hessian mult. function is requested
+                if nargout > 2 % Hessian mult. function is requested.
                     hessMultVectorFunc = @hessMult;
                 end
             end
             
             function hessV = hessMult(v)
-                rzModRatio = R./(zModulus+eps);
-                hessV = W .* (...
-                    (2 - rzModRatio) .* v + ...
-                    (rzModRatio .* zNormalized.^2) .* conj(v));
+                hessV = 4*W .* (...
+                    (2*zSquaredModulus - R) .* v + ...
+                    z.^2 .* conj(V));
             end
         end
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

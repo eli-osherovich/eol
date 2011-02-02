@@ -1,10 +1,8 @@
-classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
-    % COMPLEX_ABS_EQ - Squared L2 norm of (|z| - R).
-    % COMPLEX_ABS_EQ computes wieghted (optional) squared L2 norm of (|z| - R).
+classdef pfComplexSquaredAbsPoissonLikelyhood_eo < PenaltyFunc_eo
+   
     
     
-    
-    % Copyright 2008-2010 Eli Osherovich.
+    % Copyright 2008-2011 Eli Osherovich.
     
     
     
@@ -14,7 +12,7 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
     end
     
     methods
-        function self = pfComplexAbsEQ_eo(r, w)
+        function self = pfComplexSquaredAbsPoissonLikelyhood_eo(r, w)
             
             % Check that R is nonnegative.
             validateattributes(r, {'numeric'}, {'real', 'nonnegative'});
@@ -27,36 +25,30 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
             end
         end
     
-        function [val, grad, hessMultVectorFunc] = doCalculations(self, z)
+        function [val, grad, hessMultVecorFunc] = doCalculations(self, z)
             % Introduce local variables instead of object's members.
             % Current MATLAB version does not use JIT for calculations
             % involving object's members.
             R = self.r;
             W = self.w;
             
-            % Calculate z's modulus and phase
-            % zModulus = abs(z);
-            % zPhase = angle(z);
-            [zPhase, zModulus] = cmplx2polC_eo(z);
-            
+            % calculate |z|^2
+            zSquaredModulus = z.*conj(z);
+                        
             % Calculate function value.
-            val = sum(W .* (zModulus - R).^2);
+            val = sum(W .* (zSquaredModulus(:)-R(:).*log(zSquaredModulus(:))));
             
             if nargout > 1, % gradient requested
-                %zNormalized = complex(cos(zPhase), sin(zPhase));
-                zNormalized = pol2unitcmplxC_eo(zPhase);
-                grad = 2*W .* (z - R .* zNormalized);
+                
+                grad = 2*W .* (z - R./conj(z));
                 
                 if nargout > 2 % Hessian mult. function is requested
-                    hessMultVectorFunc = @hessMult;
+                    hessMultVecorFunc = @hessMult;
                 end
             end
             
             function hessV = hessMult(v)
-                rzModRatio = R./(zModulus+eps);
-                hessV = W .* (...
-                    (2 - rzModRatio) .* v + ...
-                    (rzModRatio .* zNormalized.^2) .* conj(v));
+                hessV = 2*W .* (v + R./conj(z.^2).*conj(v));
             end
         end
     end
