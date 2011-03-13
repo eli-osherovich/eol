@@ -23,7 +23,7 @@ end
     ...                 % complex/real if necessary
     maxIter,...         % Maximal number of iterations (200)
     complexVarsFlag,... % Indicator whether the variables X are complex (false)
-    nPrev,...           % Number of previous steps/gradients to remember (100)
+    nPrev,...           % Number of previous steps/gradients to remember (10)
     useMex,...          % Shall we use MEX files? (true)
     tolX, ...           % Step size tolerance (1e-8)
     tolFun, ...         % Function value tolerance (1e-8)

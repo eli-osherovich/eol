@@ -33,7 +33,7 @@ end
 maxIter = getOpt_eo(options, 'maxIter', 200);
 
 % number of previous steps/gradients to use
-nPrev = getOpt_eo(options, 'nPrev', 100);
+nPrev = getOpt_eo(options, 'nPrev', 10);
 
 % shall MEX files be used
 useMex = getOpt_eo(options, 'useMex', true);
