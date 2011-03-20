@@ -1,19 +1,31 @@
 function saveBZRRev(saveFile, varargin)
-    % Save BZR revision information
+    % Save BZR revision information.
+    % SAVEBZRREV(SAVEFILE) - save BZR revision information of the calling
+    % function and (all) its callers.
+    % SAVEBZRREV(SAVEFILE, DIR1, DIR2, ...) in addition to the callers of
+    % the current function include directories DIR1, DIR2, etc. to the
+    % report.
+    % SAVEBZRREV('',...) - if SAVEFILE is empty the function will not save
+    % any information all test, however will run as usual.
+    
     
     
     % Copyright 2011 Eli Osherovich.
     
     
-    if nargin < 2
-        error('Not enough input arguments');
-    end
+    % Get all callers.
+    callerStruct = dbstack(1, '-completenames');
+    callerDirs = cellfun(@fileparts, ... 
+        {callerStruct.file}, 'UniformOutput', false);
     
     % Create empty cell for the revision numbers.
-    revNumbers = cell(size(varargin));
+    revNumbers = cell(numel(callerDirs) +  numel(varargin), 1);
     
-    for i = 1:length(varargin)
-        [status, output] = system(['bzr st ' varargin{i}]);
+    % All dirs.
+    allDirs = [callerDirs, varargin];
+    
+    for i = 1:length(allDirs)
+        [status, output] = system(['bzr st ' allDirs{i}]);
         
         % Check whether the command succeeded.
         if 0 ~= status 
@@ -22,11 +34,11 @@ function saveBZRRev(saveFile, varargin)
         
         % Non-empty OUTPUT means there are uncommited changes.
         if ~isempty(output)
-            error('There are uncommited changes in %s', varargin{i});
+            error('There are uncommited changes in %s', allDirs{i});
         end
         
         % Save revision number of the current directory.
-        [revStatus, revNum] = system(['bzr revno ' varargin{i}]);
+        [revStatus, revNum] = system(['bzr revno ' allDirs{i}]);
         if 0 ~= revStatus
             error('Failed to run BZR REVNO: %s', revNum);
         end
@@ -34,6 +46,8 @@ function saveBZRRev(saveFile, varargin)
     end
     
     % Save all revisions (as a map container) to a file.
-    revMap = containers.Map(varargin, revNumbers);
-    save(saveFile, 'revMap');
+    if ~isempty(saveFile)
+        revMap = containers.Map(allDirs, revNumbers);
+        save(saveFile, 'revMap');
+    end
     
