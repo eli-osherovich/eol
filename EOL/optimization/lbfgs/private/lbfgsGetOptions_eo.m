@@ -1,6 +1,7 @@
 function [...
     x0, maxIter, complexVarsFlag, nPrev, useMex,...
-    tolX, tolFun, tolGrad, display] = lbfgsGetOptions_eo(x0, options)
+    tolX, tolFun, tolGrad, display, saveDir] = ...
+    lbfgsGetOptions_eo(x0, options)
 
 % convert x to a column vector and verify validity
 
@@ -55,4 +56,11 @@ if strcmpi(display, 'off')
     display = false;
 elseif strcmpi(display, 'on')
     display = true;
+end
+
+% directory to save current x (empty by default = not to save)
+saveDir = getOpt_eo(options, 'saveDir', '');
+% create the directory if it does not exist
+if ~isempty(saveDir) && ~exist(saveDir, 'dir')
+    mkdir(saveDir);
 end

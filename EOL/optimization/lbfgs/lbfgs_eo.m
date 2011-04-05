@@ -28,7 +28,8 @@ end
     tolX, ...           % Step size tolerance (1e-8)
     tolFun, ...         % Function value tolerance (1e-8)
     tolGrad,...         % Gradient norm tolerance (1e-8)
-    display...          % Progress report (true)
+    display,...         % Progress report (true)
+    saveDir...          % Directory to save current x ('' = do not save)
     ] = lbfgsGetOptions_eo(x0, Options);
 
 %% Variables initialization and memory allocation.
@@ -42,19 +43,25 @@ Ax = applyMapping(FuncAxStruct, x);
 % Calculate initial function value and gradient.
 [funcVal, grad] = calcObjFunc(x, Ax, FuncAxStruct, funcX, complexVarsFlag);
 gradNorm = norm(grad);
-funcCount = 1;
 
+% Initialize counters.
+funcCount = 1;
+iter = 0;
 
 % Print initial state (if requested).
 if display
 	fprintf('%10s %10s %15s %15s %15s\n','Iteration','FunEvals','Step Length','Function Val','Opt Cond');
-    fprintf('%10d %10d %15.5e %15.5e %15.5e\n', 0, ...
+    fprintf('%10d %10d %15.5e %15.5e %15.5e\n', iter, ...
         funcCount, 0, funcVal, gradNorm);
+end
+% Save current x (if requested).
+if ~isempty(saveDir)
+    save(fullfile(saveDir, int2str(iter)), 'x');
 end
 
 % Test termination criteria.
 [done, exitFlag, exitMsg] = testTermCriteria(...
-    0, x, grad, funcVal, ...
+    iter, x, grad, funcVal, ...
     Inf, gradNorm, Inf,...
     [], maxIter, tolX, tolGrad, tolFun, complexVarsFlag);
 
@@ -66,7 +73,7 @@ Output.initialGradNorm = gradNorm;
 t0 =  1;
 H0 = min(1, 1/gradNorm);
 
-iter = 0;
+
 validIdx = 0;
 wrapAround = 0;
 
@@ -113,6 +120,10 @@ while ~done
     if display
         fprintf('%10d %10d %15.5e %15.5e %15.5e\n', iter, ...
             funcCount, t, funcVal, gradNorm);
+    end
+    % Save current x (if requested).
+    if ~isempty(saveDir)
+        save(fullfile(saveDir, int2str(iter)), 'x');
     end
     
     % Test termination criteria.
