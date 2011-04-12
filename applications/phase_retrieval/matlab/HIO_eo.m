@@ -1,5 +1,5 @@
-function [x, err] = HIO_eo(x0, supportX, FMod, supportF, nIter,...
-        complexVarsFlag, phaseLo, phaseHi)
+function [x, err] = HIO_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
+        Options)
     %HIO - hybrid input-output algorithm with padding
 
     
@@ -13,22 +13,28 @@ function [x, err] = HIO_eo(x0, supportX, FMod, supportF, nIter,...
     % x - (current) signal estimate.
     % y - transformation (projection) of x that satisfies Fourier domain
     % constraints.
-   
+    
     
     % Check inputs.
-    validateattributes(x0, {'numeric'},{});
+    validateattributes(x0, {'numeric'},{'nonnan', 'finite'});
     validateattributes(supportX, {'logical'},{});
-    validateattributes(FMod, {'numeric'}, {'nonnegative'});
+    validateattributes(FMod, {'numeric'}, {'nonnegative','nonnan', 'finite'});
     validateattributes(supportF, {'logical'},{});
-    validateattributes(complexVarsFlag, {'logical'}, {'scalar'});
-    if nargin ~= 6 && nargin ~=8
-        error('You must provide either 6 or 8 inputs');
+    
+
+    
+    %% Use default options if Options is not provided or empty.
+    if nargin < 7
+        Options = struct();
     end
     
-    if nargin ~= 8
-        phaseLo = [];
-        phaseHi = [];
-    end
+    %% Set parameters (default value)
+    [   maxIter,...         % Maximal number of iterations (1000)
+        complexVarsFlag,... % Indicator whether the variables X are complex (false)
+        display,...         % Progress report (true)
+        saveDir...          % Directory to save current x ('' = do not save)
+    ] = hioGetOptions_eo(x0, Options);
+    
     
     
     % Damping factor, several publications claim that it must be around
@@ -40,7 +46,12 @@ function [x, err] = HIO_eo(x0, supportX, FMod, supportF, nIter,...
     
     % Run HIO iterations.
     x = x0;
-    for i = 1:nIter
+    % Save current x (if requested).
+    if ~isempty(saveDir)
+        save(fullfile(saveDir, int2str(0)), 'x');
+    end
+    
+    for i = 1:maxIter
         
         % Generate singnal that satisfies Fourier domain constraints.
         [y, errF] = forceFourierMagnitudeAndPhase(x, xSize, FMod, supportF, ...
@@ -64,6 +75,12 @@ function [x, err] = HIO_eo(x0, supportX, FMod, supportF, nIter,...
         % HIO step.
         y(violations) = x(violations) - beta*y(violations);
         x = y;
+        
+        
+        % Save current x (if requested).
+        if ~isempty(saveDir)
+            save(fullfile(saveDir, int2str(i)), 'x');
+        end
     end
     
     % Reshape x to the original size.
