@@ -147,10 +147,10 @@ qTol = 2;
 h = h * 2^nSteps;
 
 % Preallocate space for tableaus
-Jtab= cell(nSteps);
-Ctab = cell(nSteps-1);
+Jtab= cell(nSteps);    % Jacobians.
+Ctab = cell(nSteps-1); % Correctins.
 
-% The first approximation is computed outside the look just to give us the
+% The first approximation is computed outside the loop just to give us the
 % size of the Jacobian.
 Jtab{1,1} = centralDerivative(x, func, h);
 h = h/2;

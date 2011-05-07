@@ -14,7 +14,7 @@ function testAll(dirName, fileOutName)
 
 
 
-% Copyright 2010 Eli Osherovich.
+% Copyright 2010-2011 Eli Osherovich.
 
     
     
@@ -54,7 +54,7 @@ for i = 1:numel(allSlibs)
     
         
     % Calculate numerical Jacobian.
-    N_Jac = (calcNumJacobian_eo(x, @objFuncSOE, 'precise'))';
+    N_Jac = calcNumJacobian_eo(x, @objFuncSOE, 'precise');
     
     % Calculate numerical gradient.
     N_Grad = (calcNumJacobian_eo(x, @objFuncSOS, 'precise'))';
