@@ -1,19 +1,22 @@
 classdef pfComplexAbsLEQ_eo < PenaltyFunc_eo
-    % COMPLEX_ABS_LEQ - penalty function that forces z modulus to be less then
-    % or equal to R
+    % COMPLEX_ABS_LEQ - Squared L2 norm of (|z| - R) where |z| > R.
+    % COMPLEX_ABS_EQ computes wieghted (optional) squared L2 norm of (|z| - R) where |z| > R,
+    % thus, forcing |z| to be less than r.
+    
+    
+    % Copyright 2008-2011 Eli Osherovich.
 
     
-    % Copyright 2008-2010 Eli Osherovich.
-
     
-    properties (Access = private)
-        r
-        w = 1;
+    properties (Access=private)
+        r;      % given absolute value
+        w = 1;  % weights
     end
     
     methods
         function self = pfComplexAbsLEQ_eo(r, w)
-            % Chech that R is nonnegative.
+            
+            % Check that R is nonnegative.
             validateattributes(r, {'numeric'}, {'real', 'nonnegative'});
             self.r = r(:);
             
@@ -23,18 +26,19 @@ classdef pfComplexAbsLEQ_eo < PenaltyFunc_eo
                 self.w = w(:);
             end
         end
- 
-        function [val, grad, hessMultVecorFunc] = doCalculations(self, z)
+    
+        function [val, grad, hessMultVectorFunc] = doCalculations(self, z)
             % Introduce local variables instead of object's members.
             % Current MATLAB version does not use JIT for calculations
             % involving object's members.
             R = self.r;
             W = self.w;
             
-            % Calculate z's modulus.
-            zModulus = abs(z);
-           
-
+            % Calculate z's modulus and phase.
+            % zModulus = abs(z);
+            % zPhase = angle(z);
+            [zPhase, zModulus] = cmplx2polC_eo(z);
+            
             difference = zModulus - R;
 
             % Find violations.
@@ -43,28 +47,35 @@ classdef pfComplexAbsLEQ_eo < PenaltyFunc_eo
             % Violating values.
             zv = z(violIdx);
             zvModulus = zModulus(violIdx);
-            rv = R(violIdx);
+            zvPhase = zPhase(violIdx);
+            Rv = R(violIdx);
+            if isscalar(W)
+                Wv = W;
+            else
+                Wv = W(violIdx);
+            end
 
-            val = sum(W.*difference(violIdx).^2);
+            % Calculate function value.
+            val = sum(Wv .* difference(violIdx).^2);
 
             if nargout > 1, % gradient requested
+                %zvNormalized = complex(cos(zvPhase), sin(zvPhase));
+                zvNormalized = pol2unitcmplxC_eo(zvPhase);
                 grad = zeros(size(z));
-                          
-                zvNormalized = exp(1i*angle(zv)); % slow?
-                grad(violIdx) = 2*W .* (zv -  rv.*zvNormalized);
+                grad(violIdx) = 2*Wv .* (zv -  Rv.*zvNormalized);
                 
-                if nargout > 2, % Hessian mult. function is requested
-                    hessMultVecorFunc = @hessMult;
+                if nargout > 2 % Hessian mult. function is requested
+                    hessMultVectorFunc = @hessMult;
                 end
             end
             
             function hessV = hessMult(v)
-                rzvMod_ratio = rv./(zvModulus+eps);
+                rzvModRatio = Rv./(zvModulus+eps);
                 hessV = zeros(numel(v), 1);
                 vv = v(violIdx);
-                hessV(violIdx) = W .*( ...
-                    (2 - rzvMod_ratio) .*vv + ...
-                    (rzvMod_ratio.*zvNormalized.^2) .* conj(vv));
+                hessV(violIdx) = Wv .* ( ...
+                    (2 - rzvModRatio) .* vv + ...
+                    (rzvModRatio.*zvNormalized.^2) .* conj(vv));
             end
         end
     end

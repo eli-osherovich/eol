@@ -4,7 +4,7 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
     
     
     
-    % Copyright 2008-2010 Eli Osherovich.
+    % Copyright 2008-2011 Eli Osherovich.
     
     
     
@@ -34,7 +34,7 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
             R = self.r;
             W = self.w;
             
-            % Calculate z's modulus and phase
+            % Calculate z's modulus and phase.
             % zModulus = abs(z);
             % zPhase = angle(z);
             [zPhase, zModulus] = cmplx2polC_eo(z);
@@ -54,7 +54,7 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
             
             function hessV = hessMult(v)
                 rzModRatio = R./(zModulus+eps);
-                hessV = W .* (...
+                hessV = W .* ( ...
                     (2 - rzModRatio) .* v + ...
                     (rzModRatio .* zNormalized.^2) .* conj(v));
             end
