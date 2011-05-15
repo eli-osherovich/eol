@@ -88,8 +88,7 @@ for i = 1:numel(allSlibs)
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %         LBFGS_EO                                   %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    fxStruct = struct('function', @objFuncSOS);
-    [~, fval, output] = lbfgs_eo(x0, [], fxStruct, options);
+    [~, fval, output] = lbfgs_eo(x0, [], @objFuncSOS, options);
     fprintf(fileID, '%-10s %-15g %-15g %-7d %-7d %-9s %-s\n', funcName, ...
             fval, output.firstOrderOpt, output.nIterations, output.funcCount, ...
             status2str(output.exitFlag, output.lsExitFlag), 'lbfgs_eo' );
