@@ -47,7 +47,11 @@ function saveBZRRev(saveFile, varargin)
     
     % Save all revisions (as a map container) to a file.
     if ~isempty(saveFile)
+        % Save the revision numbers of all relevant directories.
         revMap = containers.Map(allDirs, revNumbers);
-        save(saveFile, 'revMap');
+        % Save also the installed Matlab and its toolboxes versions.
+        matlabVer = ver;
+        revMapMatlab = contaniers.Map({matlabVer.Name, matlabVer.Version});
+        save(saveFile, 'revMap', 'revMapMatlab');
     end
     
