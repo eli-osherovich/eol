@@ -51,7 +51,7 @@ function saveBZRRev(saveFile, varargin)
         revMap = containers.Map(allDirs, revNumbers);
         % Save also the installed Matlab and its toolboxes versions.
         matlabVer = ver;
-        revMapMatlab = contaniers.Map({matlabVer.Name, matlabVer.Version});
+        revMapMatlab = containers.Map({matlabVer.Name}, {matlabVer.Version});
         save(saveFile, 'revMap', 'revMapMatlab');
     end
     
