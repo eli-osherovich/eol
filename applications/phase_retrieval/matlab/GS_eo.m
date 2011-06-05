@@ -1,6 +1,7 @@
-function [x, err] = HIO_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
+function [x, err] = GS_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
         Options)
-    %HIO - hybrid input-output algorithm with padding
+    %GS - Gerschberg-Saxton algorithm with padding and support in the
+    %object and Fourier domains.
 
     
     
@@ -37,14 +38,14 @@ function [x, err] = HIO_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
     
     
     
-    % Damping factor, several publications claim that it must be around
-    % .75
-    beta = 0.75;
+    % Damping factor, for beta = 1 we have the classical GS, otherwise it
+    % is damped GS.
+    beta = 1;
 
     xSize = size(x0);
     
     
-    % Run HIO iterations.
+    % Run GS iterations.
     x = x0;
     % Save current x (if requested).
     if ~isempty(saveDir)
@@ -83,8 +84,8 @@ function [x, err] = HIO_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
                 0, err, errF, errS);
         end
         
-        % HIO step.
-        y(violations) = x(violations) - beta*y(violations);
+        % GS step.
+        y(violations) = y(violations) - beta*y(violations);
         x = y;
         
         
