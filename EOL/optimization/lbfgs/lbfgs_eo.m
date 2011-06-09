@@ -32,6 +32,16 @@ end
     saveDir...          % Directory to save current x ('' = do not save)
     ] = lbfgsGetOptions_eo(x0, Options);
 
+
+% Check if the third output argument (Output) was requested. 
+if nargout > 2
+    outputRequested = true;
+    Output.allFuncVals = NaN(maxIter+1, 1);
+    Output.allGradNorms = NaN(maxIter+1, 1);
+else
+    outputRequested = false;
+end
+
 %% Variables initialization and memory allocation.
 % Preallocate space for previous steps and grads.
 prevGrads = cell(1, nPrev);
@@ -65,9 +75,14 @@ end
     Inf, gradNorm, Inf,...
     [], maxIter, tolX, tolGrad, tolFun, complexVarsFlag);
 
-% Set output structure fileds.
-Output.initialFval = funcVal;
-Output.initialGradNorm = gradNorm;
+% If Output structure was requested update the list of all function
+% values and gradient norms (used to review/visualize minimization
+% progress).
+if outputRequested 
+    Output.allFuncVals(iter + 1) = funcVal;
+    Output.allGradNorms(iter + 1) = gradNorm;
+end
+
 
 % Initial step and search direction scale factor.
 t0 =  1;
@@ -111,6 +126,7 @@ while ~done
     stepNorm = norm(step);
     
     
+    
     % Update LBFGS memory.
     [prevSteps, prevGrads, H0, validIdx, wrapAround] = ...
         lbfgsUpdate_eo(validIdx, wrapAround, step, grad-gradOld,...
@@ -120,6 +136,13 @@ while ~done
     if display
         fprintf('%10d %10d %15.5e %15.5e %15.5e\n', iter, ...
             funcCount, t, funcVal, gradNorm);
+    end
+    % If Output structure was requested update the list of all function
+    % values and gradient norms (used to review/visualize minimization
+    % progress).
+    if outputRequested
+        Output.allFuncVals(iter + 1) = funcVal;
+        Output.allGradNorms(iter + 1) = gradNorm;
     end
     % Save current x (if requested).
     if ~isempty(saveDir)
@@ -141,23 +164,28 @@ end
 % Reshape x to its original size.
 x = reshape(x, xOrigSize);
 
-% Set output struct fields.
-Output.finalFval = funcVal;
-Output.finalGrad = grad;
-Output.firstOrderOpt = gradNorm;
-Output.nIterations = iter;
-Output.funcCount = funcCount;
-Output.exitMsg = exitMsg;
-Output.exitFlag = exitFlag;
-
-% Make sure that we use LSoutput only if the linesearch was called at least
-% once.
-if iter > 0
-    Output.lsExitMsg = LSoutput.exitMsg;
-    Output.lsExitFlag = LSoutput.exitFlag;
-else
-   Output.lsExitMsg = '';
-   Output.lsExitFlag = NaN;
+% Update Output structure (if requested).
+if outputRequested
+    % Set output struct fields.
+    Output.finalGrad = grad;
+    Output.nIterations = iter;
+    Output.funcCount = funcCount;
+    Output.exitMsg = exitMsg;
+    Output.exitFlag = exitFlag;
+    
+    % Clip unused function values/gradient norms.
+    Output.allFuncVals(iter + 2:end) = [];
+    Output.allGradNorms(iter + 2:end) = [];
+    
+    % Make sure that we use LSoutput only if the linesearch was called at least
+    % once.
+    if iter > 0
+        Output.lsExitMsg = LSoutput.exitMsg;
+        Output.lsExitFlag = LSoutput.exitFlag;
+    else
+        Output.lsExitMsg = '';
+        Output.lsExitFlag = NaN;
+    end
 end
 
 

@@ -1,4 +1,4 @@
-function [x, err] = HIO_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
+function [x, err, Output] = HIO_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
         Options)
     %HIO - hybrid input-output algorithm with padding
 
@@ -35,7 +35,15 @@ function [x, err] = HIO_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
         saveDir...          % Directory to save current x ('' = do not save)
     ] = hioGetOptions_eo(x0, Options);
     
-    
+   % Check if the third output argument (Output) was requested.
+   if nargout > 2
+       outputRequested = true;
+       Output.allFourierErrs = NaN(maxIter+1, 1);
+       Output.allObjectErrs = NaN(maxIter+1, 1);
+   else
+       outputRequested = false;
+   end
+
     
     % Damping factor, several publications claim that it must be around
     % .75
@@ -76,6 +84,12 @@ function [x, err] = HIO_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
         
         % Total error.
         err = errF + errS;
+    
+        % If Output structure was requested update the list of all errors.
+        if outputRequested
+            Output.allFourierErrs(i + 1) = errF;
+            Output.allObjectErrs(i + 1) = errS;
+        end
         
         % Print progress (if requested).
         if display
