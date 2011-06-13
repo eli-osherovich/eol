@@ -9,19 +9,30 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
     
     
     properties (Access=private)
-        r;      % given absolute value
-        w = 1;  % weights
+        r;              % given absolute value
+        w = 1;          % weights
+        phaseToUse = 0; % phase to use when z's magnitude is zero.
     end
     
     methods
-        function self = pfComplexAbsEQ_eo(r, w)
+        function self = pfComplexAbsEQ_eo(r, ph, w)
             
             % Check that R is nonnegative.
             validateattributes(r, {'numeric'}, {'real', 'nonnegative'});
             self.r = r(:);
             
-            % Set the weight matrix W (if provided)
-            if 2 == nargin
+            % Set phaseToUse (if provided).
+            if nargin > 1 && ~isempty(ph)
+                if isscalar(ph)
+                    validateattributes(ph, {'numeric'}, {'real'});
+                else
+                    validateattributes(ph(:), {'numeric'}, {'size', [numel(r),1]});
+                end
+                self.phaseToUse = ph(:);
+            end
+            
+            % Set the weight matrix W (if provided).
+            if nargin == 3
                 validateattributes(w, {'numeric'}, {'real', 'nonnegative'});
                 self.w = w(:);
             end
@@ -35,9 +46,34 @@ classdef pfComplexAbsEQ_eo < PenaltyFunc_eo
             W = self.w;
             
             % Calculate z's modulus and phase.
-            % zModulus = abs(z);
-            % zPhase = angle(z);
-            [zPhase, zModulus] = cmplx2polC_eo(z);
+            % In general z shall not be real. However, Matlab's
+            % implementation of the Fourier transform CAN produce real
+            % output even when the input was real.
+            if isreal(z)
+                zModulus = abs(z);
+                zPhase = zeros(size(z));
+            else
+                % zModulus = abs(z);
+                % zPhase = angle(z);
+                [zPhase, zModulus] = cmplx2polC_eo(z);
+            end
+           
+            
+            % The phase is undetermined where zModules = 0. Hence, we have
+            % to use some reasonable value. The best approach would
+            % probably be to average the phases of the neighbors. Here we
+            % use somewhat simpler remedy: use some predefined/given
+            % values. Note that by default the phase is set to zero if 
+            % |z| = 0.
+            PhaseToUse = self.phaseToUse;
+            zeroIdx = zModulus == 0;
+            if isscalar(PhaseToUse) 
+                if PhaseToUse ~= 0
+                    zPhase(zeroIdx) = PhaseToUse;
+                end
+            else
+                zPhase(zeroIdx) = PhaseToUse(zeroIdx);
+            end
             
             % Calculate function value.
             val = sum(W .* (zModulus - R).^2);

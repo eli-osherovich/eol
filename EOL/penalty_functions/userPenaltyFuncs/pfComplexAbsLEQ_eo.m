@@ -35,9 +35,17 @@ classdef pfComplexAbsLEQ_eo < PenaltyFunc_eo
             W = self.w;
             
             % Calculate z's modulus and phase.
-            % zModulus = abs(z);
-            % zPhase = angle(z);
-            [zPhase, zModulus] = cmplx2polC_eo(z);
+            % In general z shall not be real. However, Matlab's
+            % implementation of the Fourier transform CAN produce real
+            % output even when the input was real.
+            if isreal(z)
+                zModulus = abs(z);
+                zPhase = zeros(size(z));
+            else
+                % zModulus = abs(z);
+                % zPhase = angle(z);
+                [zPhase, zModulus] = cmplx2polC_eo(z);
+            end
             
             difference = zModulus - R;
 
