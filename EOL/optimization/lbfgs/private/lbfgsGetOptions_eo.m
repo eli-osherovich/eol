@@ -1,6 +1,6 @@
 function [...
     x0, maxIter, complexVarsFlag, nPrev, useMex,...
-    tolX, tolFun, tolGrad, display, saveDir] = ...
+    tolX, tolFun, targetFuncVal, tolGrad, display, saveDir] = ...
     lbfgsGetOptions_eo(x0, options)
 
 % convert x to a column vector and verify validity
@@ -42,8 +42,11 @@ useMex = getOpt_eo(options, 'useMex', true);
 % step norm tolerance
 tolX = getOpt_eo(options, 'tolX', 1e-8);
 
-% function change tolerance
+% objective function change tolerance
 tolFun = getOpt_eo(options, 'tolFun', 1e-8);
+
+% objective function target values
+targetFuncVal = getOpt_eo(options, 'targetFuncVal', -realmax);
 
 % gradient norm tolerance
 tolGrad = getOpt_eo(options, 'tolGrad', 1e-8);

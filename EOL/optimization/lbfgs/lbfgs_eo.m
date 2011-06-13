@@ -27,6 +27,7 @@ end
     useMex,...          % Shall we use MEX files? (true)
     tolX, ...           % Step size tolerance (1e-8)
     tolFun, ...         % Function value tolerance (1e-8)
+    targetFuncVal, ...  % Objective function target value (-realmax);
     tolGrad,...         % Gradient norm tolerance (1e-8)
     display,...         % Progress report (true)
     saveDir...          % Directory to save current x ('' = do not save)
@@ -73,7 +74,7 @@ end
 [done, exitFlag, exitMsg] = testTermCriteria(...
     iter, x, grad, funcVal, ...
     Inf, gradNorm, Inf,...
-    [], maxIter, tolX, tolGrad, tolFun, complexVarsFlag);
+    [], maxIter, tolX, tolGrad, tolFun, targetFuncVal, complexVarsFlag);
 
 % If Output structure was requested update the list of all function
 % values and gradient norms (used to review/visualize minimization
@@ -153,7 +154,7 @@ while ~done
     [done, exitFlag, exitMsg] = testTermCriteria(...
         iter, x, grad, funcVal, ...
         stepNorm, gradNorm, abs(funcVal - funcValOld),...
-        LSoutput, maxIter, tolX, tolGrad, tolFun, complexVarsFlag);
+        LSoutput, maxIter, tolX, tolGrad, tolFun, targetFuncVal, complexVarsFlag);
    
 end
 % Display exit message (if requested).
@@ -192,7 +193,7 @@ end
 function [done, exitFlag, exitMsg] = testTermCriteria(...
     iter, x, grad, funcVal, ...
     stepNorm, gradNorm, funcValDiff,...
-    LSoutput, maxIter, tolX, tolGrad, tolFun, complexVarsFlag)
+    LSoutput, maxIter, tolX, tolGrad, tolFun, targetFuncVal, complexVarsFlag)
 
 done = false;
 exitFlag = 0;
@@ -209,7 +210,7 @@ end
 % Check if grad has valid values.
 if ~isValid(grad, complexVarsFlag)
     done = true;
-    exitMsg = 'Invalid Grad values';
+    exitMsg = 'Invalid Gradient values';
     exitFlag = -2;
     return;
 end
@@ -217,7 +218,7 @@ end
 % Check if fVal is valid.
 if ~isValid(funcVal)
     done = true;
-    exitMsg = 'Invalid F value';
+    exitMsg = 'Invalid Function value';
     exitFlag = -3;
     return;
 end
@@ -278,4 +279,11 @@ if funcValDiff <= tolFun
     exitMsg = sprintf(['Change in the objective function value is smaller ' ...
                        'than tolFun (%g) tolerance.'], tolFun);
     return;
+end
+
+if funcVal <= targetFuncVal
+    done = true;
+    exitFlag = 4;
+    exitMsg = sprintf(['Objective function value has reached the desired ' ...
+                       'target targetFuncVal (%g).'], targetFuncVal);
 end
