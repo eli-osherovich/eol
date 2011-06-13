@@ -8,7 +8,6 @@ classdef PenaltyFunc_eo
     
     properties (Access = protected)
         multFactor = 1
-        minusFlag = false
     end
     
     methods (Abstract)

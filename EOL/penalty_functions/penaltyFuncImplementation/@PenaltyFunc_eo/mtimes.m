@@ -7,4 +7,4 @@ if ~isa(self, 'PenaltyFunc_eo')
 end
 
 validateattributes(scalar, {'numeric'}, {'real', 'scalar'});
-self.multFactor = scalar;
+self.multFactor = scalar * self.multFactor;

@@ -20,7 +20,7 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
             %
             % The reasons to avoid that simple solutions are twofold:
             % Fist, writing an expression like pfSum = pf1 + pf2 + pf3 +... +pf10
-            % will create 9 PenaltyFuncSum(s). Hence, we one will call
+            % will create 9 PenaltyFuncSum(s). Hence, when one will call
             % pfSum(x) it will result in 9 *nested* calls.
             % The second reason to avoid PenaltyFuncSum in the list is
             % because MATLAB does not call the overloaded SUBSREF function
@@ -29,13 +29,37 @@ classdef PenaltyFuncSum_eo < PenaltyFunc_eo
             %
             % res = PenaltyFuncListCell{1}(x);
             %
-            
+                        
             % Find PenaltyFuncSum(s) in the input
             pfSumIdx = cellfun (@(c) isa(c, 'PenaltyFuncSum_eo'), varargin);
             
-            % Expand PenaltyFuncSum(s) and use normal PenaltyFunc(s) as usual
-            pfSumExpand = cellfun(@(c) c.PenaltyFuncListCell, varargin(pfSumIdx), 'UniformOutput', false);
-            self.PenaltyFuncListCell = [pfSumExpand{:} varargin(~pfSumIdx)];
+            
+            % Find the total number of penatlyFunc(s):
+            % plain penaltyFunc contribues one, while PenaltyFuncSum
+            % contributes sevearl penaltyFunc(s).
+            nFunc = sum(~pfSumIdx) + ... 
+                sum(cellfun(@(c) numel(c.PenaltyFuncListCell), varargin(pfSumIdx)));
+            
+            % Preallocate penalty functions list.
+            penaltyFuncListCell = cell(1, nFunc);
+            
+            % Run over all arguments and add/expand them into the new list.
+            curIdx = 1;
+            for i = 1:numel(pfSumIdx)
+                if pfSumIdx(i) == true
+                    % Expand PenaltyFuncSum
+                    for j = 1:numel(varargin{i}.PenaltyFuncListCell)
+                        penaltyFuncListCell{curIdx} = ...
+                            varargin{i}.PenaltyFuncListCell{j} * varargin{i}.multFactor;
+                        curIdx = curIdx + 1;
+                    end
+                else
+                    % Add plain PenaltyFunc
+                    penaltyFuncListCell{curIdx} = varargin{i};
+                    curIdx = curIdx + 1;
+                end
+            end
+            self.PenaltyFuncListCell = penaltyFuncListCell;
             
             
             
