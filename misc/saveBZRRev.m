@@ -6,7 +6,7 @@ function saveBZRRev(saveFile, varargin)
     % the current function include directories DIR1, DIR2, etc. to the
     % report.
     % SAVEBZRREV('',...) - if SAVEFILE is empty the function will not save
-    % any information all test, however will run as usual.
+    % any information. All tests, however will run as usual.
     
     
     
@@ -52,6 +52,11 @@ function saveBZRRev(saveFile, varargin)
         % Save also the installed Matlab and its toolboxes versions.
         matlabVer = ver;
         revMapMatlab = containers.Map({matlabVer.Name}, {matlabVer.Version});
+        % Create parent directory (if needed).
+        saveDir = fileparts(saveFile);
+        if ~isempty(saveDir) && ~exist(saveDir, 'dir')
+            mkdir(saveDir);
+        end
         save(saveFile, 'revMap', 'revMapMatlab');
     end
     
