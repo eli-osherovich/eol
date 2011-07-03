@@ -78,7 +78,7 @@ function [y, errF] = forceFourierMagnitudeAndPhase(x, xSize, FMod, supportF, ...
     X(supportF) = XSF;
     
     % Error in the Fourier domain.
-    errF = norm(XSF - XS);
+    errF = norm(XSF - XS)^2;
     
     % Convert back to the object domain. We use the fact that F is
     % orthogonal, i.e., inv(F) = F'.

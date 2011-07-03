@@ -80,7 +80,7 @@ function [x, err, Output] = HIO_eo(x0, supportX, FMod, supportF, phaseLo, phaseH
         end
         
         % Signal domain error.
-        errS = norm(y(violations));
+        errS = norm(y(violations))^2;
         
         % Total error.
         err = errF + errS;

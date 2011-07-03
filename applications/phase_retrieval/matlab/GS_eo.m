@@ -73,7 +73,7 @@ function [x, err] = GS_eo(x0, supportX, FMod, supportF, phaseLo, phaseHi,...
         end
         
         % Signal domain error.
-        errS = norm(y(violations));
+        errS = norm(y(violations))^2;
         
         % Total error.
         err = errF + errS;
