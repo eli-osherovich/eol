@@ -15,19 +15,25 @@
 %   dest - filename of the destination eps file. The filename is assumed to
 %          already have the extension ".eps".
 
-% Copyright (C) Oliver Woodford 2009
+% Copyright (C) Oliver Woodford 2009-2010
 
-% $Id: pdf2eps.m,v 1.2 2009/04/19 21:48:42 ojw Exp $
+% Thanks to Aldebaro Klautau for reporting a bug when saving to
+% non-existant directories.
 
 function pdf2eps(source, dest)
 % Construct the options string for pdftops
-if ispc
-    options = ['-q -paper match -pagecrop -eps -level2 "' source '" "' dest '"'];
-else
-    options = ['-q -paper match -eps -level2 "' source '" "' dest '"'];
-end
+options = ['-q -paper match -eps -level2 "' source '" "' dest '"'];
 % Convert to eps using pdftops
-pdftops(options);
+[status message] = pdftops(options);
+% Check for error
+if status
+    % Report error
+    if isempty(message)
+        error('Unable to generate eps. Check destination directory is writable.');
+    else
+        error(message);
+    end
+end
 % Fix the DSC error created by pdftops
 fid = fopen(dest, 'r+');
 if fid == -1

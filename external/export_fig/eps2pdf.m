@@ -76,7 +76,7 @@ if nargin > 3 && append && exist(dest, 'file') == 2
     options = [options ' -f "' tmp_nam '" "' source '"'];
     try
         % Convert to pdf using ghostscript
-        ghostscript(options);
+        [status message] = ghostscript(options);
     catch
         % Delete the intermediate file
         delete(tmp_nam);
@@ -89,7 +89,16 @@ else
     % Add the output file names
     options = [options ' -f "' source '"'];
     % Convert to pdf using ghostscript
-    ghostscript(options);
+    [status message] = ghostscript(options);
+end
+% Check for error
+if status
+    % Report error
+    if isempty(message)
+        error('Unable to generate pdf. Check destination directory is writable.');
+    else
+        error(message);
+    end
 end
 return
 

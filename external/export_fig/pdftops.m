@@ -21,11 +21,12 @@ function varargout = pdftops(cmd)
 %   status - 0 iff command ran without problem.
 %   result - Output from pdftops.
 
-% $Id: pdftops.m,v 1.8 2009/04/21 17:51:40 ojw Exp $
-% Copyright: Oliver Woodford, 2009
+% Copyright: Oliver Woodford, 2009-2010
 
 % Thanks to Jonas Dorn for the fix for the title of the uigetdir window on
 % Mac OS.
+% Thanks to Christoph Hertel for pointing out a bug in check_xpdf_path
+% under linux.
 
 % Call pdftops
 [varargout{1:nargout}] = system(sprintf('"%s" %s', xpdf_path, cmd));
@@ -34,7 +35,7 @@ return
 function path = xpdf_path
 % Return a valid path
 % Start with the currently set path
-path = current_xpdf_path;
+path = user_string('pdftops');
 % Check the path works
 if check_xpdf_path(path)
     return
@@ -91,8 +92,8 @@ if ~good
     return
 end
 % Update the current default path to the path found
-if change_value(path, 'current_xpdf_path_str', [mfilename('fullpath') '.m'])
-    warning('Path to pdftops executable could not be saved. Enter it manually in pdftops.m.');
+if ~user_string('pdftops', path)
+    warning('Path to pdftops executable could not be saved. Enter it manually in pdftops.txt.');
     return
 end
 return
@@ -100,15 +101,7 @@ return
 function good = check_xpdf_path(path)
 % Check the path is valid
 [good message] = system(sprintf('"%s" -h', path));
-if ispc
-    % system returns good = 1 even when the command runs (on Windows, anyway)
-    % Look for something distinct in the help text
-    good = ~isempty(strfind(message, 'PostScript'));
-else
-    good = good == 1;
-end
-return
-
-function current_xpdf_path_str = current_xpdf_path
-current_xpdf_path_str = 'C:\Program Files\xpdf-3.02pl4-win32\pdftops.exe';
+% system returns good = 1 even when the command runs
+% Look for something distinct in the help text
+good = ~isempty(strfind(message, 'PostScript'));
 return

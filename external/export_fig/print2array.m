@@ -22,7 +22,7 @@
 % OUT:
 %   A - MxNx3 uint8 image of the figure.
 
-% Copyright (C) Oliver Woodford 2008-2009
+% Copyright (C) Oliver Woodford 2008-2010
 
 function A = print2array(fig, res, renderer)
 % Generate default input arguments, if needed
@@ -42,6 +42,8 @@ if px > 30
     % 30M pixels or larger!
     warning('MATLAB:LargeImage', 'print2array generating a %.1fM pixel image. This could be slow and might also cause memory problems.', px);
 end
+% Set the resolution parameter
+res = ['-r' num2str(ceil(get(0, 'ScreenPixelsPerInch')*res))];
 % Generate temporary file name
 tmp_nam = [tempname '.tif'];
 if nargin > 2 && strcmp(renderer, '-painters')
@@ -50,7 +52,7 @@ if nargin > 2 && strcmp(renderer, '-painters')
     print2eps(tmp_eps, fig, renderer, '-loose');
     try
         % Export to tiff using ghostscript
-        ghostscript(['-dEPSCrop -q -dNOPAUSE -dBATCH -r' num2str(ceil(get(0, 'ScreenPixelsPerInch')*res)) ' -sDEVICE=tiff24nc -sOutputFile="' tmp_nam '" "' tmp_eps '"']);
+        ghostscript(['-dEPSCrop -q -dNOPAUSE -dBATCH ' res ' -sDEVICE=tiff24nc -sOutputFile="' tmp_nam '" "' tmp_eps '"']);
     catch
         % Delete the intermediate file
         delete(tmp_eps);
@@ -60,6 +62,8 @@ if nargin > 2 && strcmp(renderer, '-painters')
     delete(tmp_eps);
     % Read in the generated bitmap
     A = imread(tmp_nam);
+    % Delete the temporary bitmap file
+    delete(tmp_nam);
     % Retrieve the background colour
     bcol = get(fig, 'Color');
     % Set border pixels to the correct colour
@@ -97,13 +101,18 @@ else
     % Set paper size
     old_mode = get(fig, 'PaperPositionMode');
     set(fig, 'PaperPositionMode', 'auto');
-    % Print to tiff file
-    print(fig, renderer, ['-r' num2str(ceil(get(0, 'ScreenPixelsPerInch')*res))], '-dtiff', tmp_nam);
+    try
+        % Try hardcopy first - undocumented MATLAB function!
+        A = hardcopy(fig, ['-D' renderer(2:end)], res);
+    catch
+        % Print to tiff file
+        print(fig, renderer, res, '-dtiff', tmp_nam);
+        % Read in the printed file
+        A = imread(tmp_nam);
+        % Delete the temporary file
+        delete(tmp_nam);
+    end
     % Reset paper size
     set(fig, 'PaperPositionMode', old_mode);
-    % Read in the printed file
-    A = imread(tmp_nam);
 end
-% Delete the temporary file
-delete(tmp_nam);
 return

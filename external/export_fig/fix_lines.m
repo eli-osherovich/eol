@@ -28,9 +28,16 @@ function fix_lines(fname, fname2)
 
 % Thank you to Sylvain Favrot for bringing the embedded font/bounding box
 % interaction in older versions of MATLAB to my attention.
+% Thank you to D Ko for bringing an error with eps files with tiff previews
+% to my attention.
+% Thank you to Laurence K for suggesting the check to see if the file was
+% opened.
 
 % Read in the file
-fh = fopen(fname, 'rt');
+fh = fopen(fname, 'r');
+if fh == -1
+    error('File %s not found.', fname);
+end
 try
     fstrm = fread(fh, '*char')';
 catch
@@ -123,7 +130,6 @@ new_style = {'/dom { dpi2point 1 currentlinewidth 0.08 mul add mul mul } bdef',.
              '/DA { [4 dam 1.5 dam] 0 setdash 0 setlinecap } bdef',... % Dashed lines
              '/DD { [1 dom 1.2 dom 4 dam 1.2 dom] 0 setdash 0 setlinecap } bdef',... % Dot dash lines
              '/GR { [0 dpi2point mul 4 dpi2point mul] 0 setdash 1 setlinecap } bdef'}; % Grid lines - dot spacing remains constant
-new_style = sprintf('%s\r', new_style{:});
 
 if nargin < 2
     % Overwrite the input file
@@ -131,9 +137,15 @@ if nargin < 2
 end
 
 % Save the file with the section replaced
-fh = fopen(fname2, 'wt');
+fh = fopen(fname2, 'w');
+if fh == -1
+    error('Unable to open %s for writing.', fname2);
+end
 try
-    fprintf(fh, '%s%s%s%s', fstrm(1:first_sec), second_sec, new_style, remaining);
+    fwrite(fh, fstrm(1:first_sec), 'char*1');
+    fwrite(fh, second_sec, 'char*1');
+    fprintf(fh, '%s\r', new_style{:});
+    fwrite(fh, remaining, 'char*1');
 catch
     fclose(fh);
     rethrow(lasterror);

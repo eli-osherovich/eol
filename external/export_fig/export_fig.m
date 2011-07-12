@@ -114,7 +114,9 @@
 %   -append - option indicating that if the file (pdfs only) already
 %             exists, the figure is to be appended as a new page, instead
 %             of being overwritten (default).
-%   handle - The handle of the figure or axes to be saved. Default: gcf.
+%   handle - The handle of the figure or axes (can be an array of handles
+%            of several axes, but these must be in the same figure) to be
+%            saved. Default: gcf.
 %
 %OUT:
 %   im - MxNxC uint8 image array of the figure.
@@ -126,7 +128,7 @@
 %
 %   See also PRINT, SAVEAS.
 
-% Copyright (C) Oliver Woodford 2008-2010
+% Copyright (C) Oliver Woodford 2008-2011
 
 % The idea of using ghostscript is inspired by Peder Axensten's SAVEFIG
 % (fex id: 10889) which is itself inspired by EPS2PDF (fex id: 5782).
@@ -152,10 +154,10 @@ function [im alpha] = export_fig(varargin)
 % Parse the input arguments
 [fig options] = parse_args(nargout, varargin{:});
 % Isolate the subplot, if it is one
-cls = strcmp(get(fig, 'Type'), 'axes');
+cls = strcmp(get(fig(1), 'Type'), 'axes');
 if cls
-    % Given a handle of a single set of axes
-    fig = isolate_subplot(fig);
+    % Given handles of one or more axes
+    fig = isolate_axes(fig);
 else
     old_mode = get(fig, 'InvertHardcopy');
 end
@@ -222,7 +224,7 @@ if isbitmap(options)
         % Print large version to array
         B = print2array(fig, magnify, renderer);
         % Downscale the image
-        B = downsize(single(B), 0, options.aa_factor);
+        B = downsize(single(B), options.aa_factor);
         % Set background to white (and set size)
         set(fig, 'Color', 'w', 'Position', pos);
         % Correct the colorbar axes colours
@@ -231,11 +233,11 @@ if isbitmap(options)
         % Print large version to array
         A = print2array(fig, magnify, renderer);
         % Downscale the image
-        A = downsize(single(A), 255, options.aa_factor);
+        A = downsize(single(A), options.aa_factor);
         % Set the background colour (and size) back to normal
         set(fig, 'Color', 'none', 'Position', pos);
         % Compute the alpha map
-        alpha = sum(B - A, 3) / (255*3) + 1;
+        alpha = round(sum(B - A, 3)) / (255 * 3) + 1;
         A = alpha;
         A(A==0) = 1;
         A = B ./ A(:,:,[1 1 1]);
@@ -300,7 +302,7 @@ if isbitmap(options)
             A = crop_background(A, tcol);
         end
         % Downscale the image
-        A = downsize(A, tcol, options.aa_factor);
+        A = downsize(A, options.aa_factor);
         if options.colourspace == 2
             % Convert to greyscale
             A = rgb2grey(A);
@@ -425,7 +427,7 @@ options = struct('name', 'export_fig_out', ...
                  'tif', false, ...
                  'jpg', false, ...
                  'bmp', false, ...
-                 'colourspace', 0, ... % ): RGB/gray, 1: CMYK, 2: gray
+                 'colourspace', 0, ... % 0: RGB/gray, 1: CMYK, 2: gray
                  'append', false, ...
                  'im', nout == 1, ...
                  'alpha', nout == 2, ...
@@ -436,7 +438,7 @@ native = false; % Set resolution to native of an image
 
 % Go through the other arguments
 for a = 1:nargin-1
-    if ishandle(varargin{a})
+    if all(ishandle(varargin{a}))
         fig = varargin{a};
     elseif ischar(varargin{a}) && ~isempty(varargin{a})
         if varargin{a}(1) == '-'
@@ -554,61 +556,7 @@ if native && isbitmap(options)
 end
 return
 
-function fh = isolate_subplot(ah, vis)
-% Isolate the axes in a figure on their own
-% Tag the axes so we can find them in the copy
-old_tag = get(ah, 'Tag');
-set(ah, 'Tag', 'ObjectToCopy');
-% Create a new figure exactly the same as the old one
-fh = copyfig(ancestor(ah, 'figure')); %copyobj(ancestor(ah, 'figure'), 0);
-if nargin < 2 || ~vis
-    set(fh, 'Visible', 'off');
-end
-% Reset the axes tag
-set(ah, 'Tag', old_tag);
-% Get all the axes and gui objects
-axs = get(fh, 'Children');
-% Find the objects to save
-ah = findobj(axs, 'Tag', 'ObjectToCopy');
-if numel(ah) ~= 1
-    close(fh);
-    error('Too many axes found');
-end
-I = true(size(axs));
-I(axs==ah) = false;
-% Set the axes tag to what it should be
-set(ah, 'Tag', old_tag);
-% Keep any legends which overlap the subplot
-ax_pos = get(ah, 'OuterPosition');
-ax_pos(3:4) = ax_pos(3:4) + ax_pos(1:2);
-for ah = findobj(axs, 'Tag', 'legend', '-or', 'Tag', 'Colorbar')'
-    leg_pos = get(ah, 'OuterPosition');
-    leg_pos(3:4) = leg_pos(3:4) + leg_pos(1:2);
-    % Overlap test
-    if leg_pos(1) < ax_pos(3) && leg_pos(2) < ax_pos(4) &&...
-       leg_pos(3) > ax_pos(1) && leg_pos(4) > ax_pos(2)
-        I(axs==ah) = false;
-    end
-end
-% Delete all axes except for the input axes and associated items
-delete(axs(I));
-return
-
-function fh = copyfig(fh)
-% Is there a legend?
-if isempty(findobj(fh, 'Type', 'axes', 'Tag', 'legend'))
-    % Safe to copy using copyobj
-    fh = copyobj(fh, 0);
-else
-    % copyobj will change the figure, so save and then load it instead
-    tmp_nam = [tempname '.fig'];
-    hgsave(fh, tmp_nam);
-    fh = hgload(tmp_nam);
-    delete(tmp_nam);
-end
-return
-
-function A = downsize(A, padval, factor)
+function A = downsize(A, factor)
 % Downsample an image
 if factor == 1
     % Nothing to do
@@ -620,34 +568,18 @@ try
 catch
     % No image processing toolbox - resize manually
     % Lowpass filter - use Gaussian as is separable, so faster
-    switch factor
-        case 4
-            % sigma: 1.7
-            filt = single([0.0148395 0.0498173 0.118323 0.198829 0.236384 0.198829 0.118323 0.0498173 0.0148395]);
-        case 3
-            % sigma: 1.35
-            filt = single([0.025219 0.099418 0.226417 0.297892 0.226417 0.099418 0.025219]);
-        case 2
-            % sigma: 1.0
-            filt = single([0.054489 0.244201 0.40262 0.244201 0.054489]);
-    end
+    % Compute the 1d Gaussian filter
+    filt = (-factor-1:factor+1) / (factor * 0.6);
+    filt = single(exp(-filt .* filt));
+    % Normalize the filter
+    filt = filt / sum(filt, 'native');
+    % Filter the image
     padding = floor(numel(filt) / 2);
-    if numel(padval) == 3 && padval(1) == padval(2) && padval(2) == padval(3)
-        padval = padval(1);
-    end
-    if numel(padval) == 1
-        B = repmat(single(padval), [size(A, 1) size(A, 2)] + (2 * padding));
-    end
     for a = 1:size(A, 3)
-        if numel(padval) == 3
-            B = repmat(single(padval(a)), [size(A, 1) size(A, 2)] + (2 * padding));
-        end
-        B(padding+1:end-padding,padding+1:end-padding) = A(:,:,a);
-        A(:,:,a) = conv2(filt, filt', B, 'valid');
+        A(:,:,a) = conv2(filt, filt', single(A([ones(1, padding) 1:end repmat(end, 1, padding)],[ones(1, padding) 1:end repmat(end, 1, padding)],a)), 'valid');
     end
-    clear B
     % Subsample
-    A = A(2:factor:end,2:factor:end,:);
+    A = A(1+floor(mod(end-1, factor)/2):factor:end,1+floor(mod(end-1, factor)/2):factor:end,:);
 end
 return
 
@@ -718,9 +650,10 @@ for b = h:-1:t
         break;
     end
 end
-% Crop the background
-A = A(t:b,l:r,:);
-v = [t b l r];
+% Crop the background, leaving one boundary pixel to avoid bleeding on
+% resize
+v = [max(t-1, 1) min(b+1, h) max(l-1, 1) min(r+1, w)];
+A = A(v(1):v(2),v(3):v(4),:);
 return
 
 function b = isvector(options)

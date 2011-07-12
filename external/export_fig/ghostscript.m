@@ -28,6 +28,9 @@ function varargout = ghostscript(cmd)
 % Thanks to Nathan Childress for the fix to the default location on 64-bit
 % Windows systems.
 
+% 27/4/11 - Find 64-bit Ghostscript on Windows. Thanks to Paul Durack and
+% Shaun Kline for pointing out the issue
+
 % Call ghostscript
 [varargout{1:nargout}] = system(sprintf('"%s" %s', gs_path, cmd));
 return
@@ -35,20 +38,22 @@ return
 function path = gs_path
 % Return a valid path
 % Start with the currently set path
-path = current_gs_path;
+path = user_string('ghostscript');
 % Check the path works
 if check_gs_path(path)
     return
 end
 % Check whether the binary is on the path
 if ispc
-    bin = 'gswin32c.exe';
+    bin = {'gswin32c.exe', 'gswin64c.exe'};
 else
-    bin = 'gs';
+    bin = {'gs'};
 end
-if check_store_gs_path(bin)
-    path = bin;
-    return
+for a = 1:numel(bin)
+    path = bin{a};
+    if check_store_gs_path(path)
+        return
+    end
 end
 % Search the obvious places
 if ispc
@@ -58,16 +63,18 @@ if ispc
         default_location = 'C:\Program Files (x86)\gs\'; % Possible location on 64-bit systems 
         dir_list = dir(default_location);
     end
-    executable = '\bin\gswin32c.exe';
+    executable = {'\bin\gswin32c.exe', '\bin\gswin64c.exe'};
     ver_num = 0;
     % If there are multiple versions, use the newest
     for a = 1:numel(dir_list)
         ver_num2 = sscanf(dir_list(a).name, 'gs%g');
         if ~isempty(ver_num2) && ver_num2 > ver_num
-            path2 = [default_location dir_list(a).name executable];
-            if exist(path2, 'file') == 2
-                path = path2;
-                ver_num = ver_num2;
+            for b = 1:numel(executable)
+                path2 = [default_location dir_list(a).name executable{b}];
+                if exist(path2, 'file') == 2
+                    path = path2;
+                    ver_num = ver_num2;
+                end
             end
         end
     end
@@ -92,13 +99,14 @@ while 1
     base = [base filesep];
     bin_dir = {'', ['bin' filesep], ['lib' filesep]};
     for a = 1:numel(bin_dir)
-        path = [base bin_dir{a} bin];
-        if exist(path, 'file') == 2
-            break;
+        for b = 1:numel(bin)
+            path = [base bin_dir{a} bin{b}];
+            if exist(path, 'file') == 2
+                if check_store_gs_path(path)
+                    return
+                end
+            end
         end
-    end
-    if check_store_gs_path(path)
-        return
     end
 end
 error('Ghostscript not found.');
@@ -110,8 +118,8 @@ if ~good
     return
 end
 % Update the current default path to the path found
-if change_value(path, 'current_gs_path_str', [mfilename('fullpath') '.m'])
-    warning('Path to ghostscript installation could not be saved. Enter it manually in ghostscript.m.');
+if ~user_string('ghostscript', path)
+    warning('Path to ghostscript installation could not be saved. Enter it manually in ghostscript.txt.');
     return
 end
 return
@@ -120,8 +128,4 @@ function good = check_gs_path(path)
 % Check the path is valid
 [good message] = system(sprintf('"%s" -h', path));
 good = good == 0;
-return
-
-function current_gs_path_str = current_gs_path
-current_gs_path_str = 'gs';
 return
