@@ -25,7 +25,13 @@ function saveBZRRev(saveFile, varargin)
     allDirs = [callerDirs, varargin];
     
     for i = 1:length(allDirs)
-        [status, output] = system(['bzr st ' allDirs{i}]);
+        % CD to the current directory (allDirs{i}) and run 'bzr st' without
+        % arguments. Giving the current directory as an argument causes bzr
+        % st to check the status only in the current directory and not in
+        % the whole working tree.
+        origDir = cd(allDirs{i});
+        [status, output] = system('bzr st');
+        cd(origDir);
         
         % Check whether the command succeeded.
         if 0 ~= status 
