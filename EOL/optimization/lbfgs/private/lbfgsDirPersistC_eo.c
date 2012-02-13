@@ -10,7 +10,7 @@
   Please Note!
 
   The function does not check inputs. MATLAB will crash if wrong
-  inputs are prvided!
+  inputs provided!
 
   Due to persistent (static) memory, this function is not
   re-entrant. Moreover, you cannot run two LBFGS algorithms in
@@ -61,7 +61,7 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   mwSignedIndex  i, nPrev,  nVars, one = 1;
   mxArray *tmp_cell_s, *tmp_cell_g;
 
-  /* prevent compiler warining on unused varialbes */
+  /* prevent compiler warning on unused varialbes */
   (void) nlhs;
   (void) nrhs;
 

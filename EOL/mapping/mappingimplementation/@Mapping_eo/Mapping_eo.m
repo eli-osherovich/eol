@@ -1,7 +1,10 @@
 classdef Mapping_eo
     
     
-    % Copyright 2010 Eli Osherovich.
+    
+    % Copyright 2010-2012 Eli Osherovich.
+    
+    
     
     properties
         RangeNumel
@@ -13,7 +16,7 @@ classdef Mapping_eo
         function self = Mapping_eo (rangeNumel, imageNumel)
             
             % Verify that we have either one or two arguments.
-            error(nargchk(1, 2, nargin));
+            narginchk(1, 2);
             
             if 1 == nargin
                 % Assume imageNumel = rangeNumel if only one argument
